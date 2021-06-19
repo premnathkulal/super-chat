@@ -7,6 +7,7 @@ import firebase from "firebase";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import vuetify from "./plugins/vuetify";
+import "@lottiefiles/lottie-player";
 
 Vue.config.productionTip = false;
 
