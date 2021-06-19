@@ -20,9 +20,12 @@ const firebaseConfig = {
   measurementId: "G-TQ28RTDZN7",
 };
 
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: (h) => h(App),
-}).$mount("#app");
+firebase.initializeApp(firebaseConfig);
+firebase.auth().onAuthStateChanged(() =>
+  new Vue({
+    router,
+    store,
+    vuetify,
+    render: (h) => h(App),
+  }).$mount("#app")
+);
