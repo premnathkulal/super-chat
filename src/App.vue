@@ -3,13 +3,25 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { Component, Vue } from "vue-property-decorator";
+import Login from "@/components/Login.vue";
+import ErrorPages from "@/components/ErrorPages.vue";
+import firebase from "firebase";
 
-export default Vue.extend({
-  name: "App",
+@Component({
+  components: {
+    Login,
+    ErrorPages,
+  },
+})
+export default class ChatApp extends Vue {
+  dialog = false;
+  user = firebase.auth().currentUser;
+  isOnline = false;
 
-  data: () => ({
-    //
-  }),
-});
+  logout(): void {
+    firebase.auth().signOut();
+    this.user = null;
+  }
+}
 </script>
