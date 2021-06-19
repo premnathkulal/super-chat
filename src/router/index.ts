@@ -27,11 +27,11 @@ const routes: Array<RouteConfig> = [
   //   name: "Group",
   //   component: GroupChat,
   // },
-  // {
-  //   path: "/chat/:id?",
-  //   name: "PersonalChat",
-  //   component: PersonalChat,
-  // },
+  {
+    path: "/chat/:id?",
+    name: "PersonalChat",
+    component: PersonalChat,
+  },
   {
     path: "/poolChat",
     name: "ChatApp",
