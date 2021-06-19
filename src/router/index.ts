@@ -32,11 +32,11 @@ const routes: Array<RouteConfig> = [
   //   name: "PersonalChat",
   //   component: PersonalChat,
   // },
-  // {
-  //   path: "/poolChat",
-  //   name: "ChatApp",
-  //   component: ChatApp,
-  // },
+  {
+    path: "/poolChat",
+    name: "ChatApp",
+    component: ChatApp,
+  },
   {
     path: "/profile",
     name: "Profile",
