@@ -22,11 +22,11 @@ const routes: Array<RouteConfig> = [
       },
     ],
   },
-  // {
-  //   path: "/groupChat/:id?",
-  //   name: "Group",
-  //   component: GroupChat,
-  // },
+  {
+    path: "/groupChat/:id?",
+    name: "Group",
+    component: GroupChat,
+  },
   {
     path: "/chat/:id?",
     name: "PersonalChat",
