@@ -42,6 +42,15 @@
     </div>
     <v-footer>
       <div class="input-div">
+        <div class="prem">
+          <VEmojiPicker
+            v-if="showEmojies"
+            :emoji-size="28"
+            :emojis-by-row="8"
+            @select="selectEmoji"
+            :emojiWithBorder="false"
+          />
+        </div>
         <div class="container">
           <form @submit.prevent="sendMessage" class="form">
             <v-textarea
@@ -59,7 +68,9 @@
               label="Enter your message !"
               clearable
               clear-icon="mdi-close-circle"
+              prepend-icon="mdi-emoticon"
               append-outer-icon="mdi-send"
+              @click:prepend="showEmojies = !showEmojies"
               @click:append-outer="sendMessage"
               @keypress.prevent.enter="sendMessage"
             ></v-textarea>
@@ -75,6 +86,7 @@ import { Component, Vue } from "vue-property-decorator";
 import firebase from "firebase";
 import { namespace } from "vuex-class";
 import { UserActions } from "@/utils/types";
+import { VEmojiPicker } from "v-emoji-picker";
 import { Emoji } from "v-emoji-picker/lib/models/Emoji";
 import * as linkify from "linkifyjs";
 import linkifyStr from "linkifyjs/string";
@@ -85,6 +97,7 @@ const user = namespace("User");
 
 @Component({
   components: {
+    VEmojiPicker,
     Message,
   },
 })
@@ -97,6 +110,7 @@ export default class PersonalChat extends Vue {
   reciverPic = "";
   senderPic = "";
   colorList = ["#a1f5c17c", "#cba9f37c", "#f7adf77c", "#e7a7817c", "#b5eeba7c"];
+  showEmojies = false;
   previews: any[] | undefined;
   parsedMessage!: string;
 
@@ -122,6 +136,7 @@ export default class PersonalChat extends Vue {
       };
       await this.db.collection(this.messageId).add(messageInfo);
       this.message = "";
+      this.showEmojies = false;
     }
   }
 
