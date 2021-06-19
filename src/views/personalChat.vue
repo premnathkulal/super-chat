@@ -1,17 +1,17 @@
 <template>
-  <div v-if="user" class="chat-app container">
-    <div class="display-message">
+  <div v-if="user" class="container chat-app">
+    <div @click="showEmojies = false" class="display-message">
       <div
         v-for="(msg, index) in allMessages"
         :key="index"
         :class="msg.userUID === user.uid ? 'my-message' : ''"
         class="message"
       >
-        <v-list-item-avatar class="img" v-if="reciverPic || senderPic">
+        <!-- <v-list-item-avatar class="img" v-if="reciverPic || senderPic">
           <v-img
             :src="
-              msg.userUID === user.uid
-                ? senderPic
+              msg.userUID !== user.uid
+                ? senderPic || '/assets/user.png'
                 : reciverPic || '/assets/user.png'
             "
             :alt="msg.displayName"
@@ -25,36 +25,48 @@
           }"
         >
           <span>{{ msg.email.slice(0, 2) }}</span>
-        </div>
+        </div> -->
         <div class="user-message">
-          <p class="message-content">
-            <span v-if="msg.userUID !== user.uid" class="msg-email">{{
+          <div class="message-content">
+            <!-- <span v-if="msg.userUID !== user.uid" class="msg-email">{{
               msg.email
-            }}</span
-            >{{ msg.text }}
-          </p>
-          <div class="d-flex msg-date-time">
-            <span class="msg-date mr-1">{{ getDate(msg.createdAt) }}</span>
-            <span class="msg-time ml-auto">{{ getTime(msg.createdAt) }}</span>
+            }}</span> -->
+            <Message :message="msg.text" />
+            <div class="d-flex msg-date-time pt-4">
+              <!-- <span class="msg-date mr-1">{{ getDate(msg.createdAt) }}</span> -->
+              <span class="msg-time ml-auto">{{ getTime(msg.createdAt) }}</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="input-div">
-      <div class="container">
-        <form @submit.prevent="sendMessage" class="form">
-          <input
-            v-model="message"
-            type="text"
-            placeholder="Enter your message!"
-            class="form-control"
-          />
-          <button :disabled="!message" type="submit" class="btn button">
-            <i class="fa fa-send"></i>
-          </button>
-        </form>
+    <v-footer>
+      <div class="input-div">
+        <div class="container">
+          <form @submit.prevent="sendMessage" class="form">
+            <v-textarea
+              v-model="message"
+              class="input-box"
+              color="secondary lighten-1"
+              height="10"
+              no-resize
+              full-width
+              solo
+              dense
+              rounded
+              hide-details
+              type="text"
+              label="Enter your message !"
+              clearable
+              clear-icon="mdi-close-circle"
+              append-outer-icon="mdi-send"
+              @click:append-outer="sendMessage"
+              @keypress.prevent.enter="sendMessage"
+            ></v-textarea>
+          </form>
+        </div>
       </div>
-    </div>
+    </v-footer>
   </div>
 </template>
 
@@ -63,11 +75,19 @@ import { Component, Vue } from "vue-property-decorator";
 import firebase from "firebase";
 import { namespace } from "vuex-class";
 import { UserActions } from "@/utils/types";
+import { Emoji } from "v-emoji-picker/lib/models/Emoji";
+import * as linkify from "linkifyjs";
+import linkifyStr from "linkifyjs/string";
+import Message from "@/components/Message.vue";
 
 const contact = namespace("Contacts");
 const user = namespace("User");
 
-@Component
+@Component({
+  components: {
+    Message,
+  },
+})
 export default class PersonalChat extends Vue {
   user = firebase.auth().currentUser;
   message = "";
@@ -77,6 +97,8 @@ export default class PersonalChat extends Vue {
   reciverPic = "";
   senderPic = "";
   colorList = ["#a1f5c17c", "#cba9f37c", "#f7adf77c", "#e7a7817c", "#b5eeba7c"];
+  previews: any[] | undefined;
+  parsedMessage!: string;
 
   @contact.Getter("loadContacts")
   public contactList!: any[];
@@ -89,16 +111,18 @@ export default class PersonalChat extends Vue {
   }
 
   async sendMessage() {
-    const messageInfo = {
-      email: this.user?.email,
-      userUID: this.user?.uid,
-      displayName: this.user?.displayName,
-      photoURL: this.user?.photoURL,
-      text: this.message,
-      createdAt: Date.now(),
-    };
-    await this.db.collection(this.messageId).add(messageInfo);
-    this.message = "";
+    if (this.message) {
+      const messageInfo = {
+        email: this.user?.email,
+        userUID: this.user?.uid,
+        displayName: this.user?.displayName,
+        photoURL: this.user?.photoURL,
+        text: this.message,
+        createdAt: Date.now(),
+      };
+      await this.db.collection(this.messageId).add(messageInfo);
+      this.message = "";
+    }
   }
 
   scrollPage(): void {
@@ -118,6 +142,52 @@ export default class PersonalChat extends Vue {
 
   getTime(timestamp: number): string {
     return new Date(timestamp).toString().slice(15, 21);
+  }
+
+  selectEmoji(emoji: Emoji): void {
+    this.message = this.message + emoji.data;
+  }
+
+  mounted(): void {
+    this.parsedMessage = linkifyStr("this.message.content", {
+      className: "chat-link",
+      defaultProtocol: "https",
+    });
+    // const el = this.$refs.chatMessage as Element;
+    // el.innerHTML = this.parsedMessage;
+  }
+
+  getLinks(msg: string) {
+    const links = linkify.find(msg);
+    this.previews = links.length > 0 ? links : undefined;
+  }
+
+  get favicon(): string {
+    const link = this.previews ? this.previews[0].href : undefined;
+    let iconURL = `http://${link?.split("/")[2].split("?")[0]}/favicon.ico`;
+    try {
+      fetch(iconURL);
+    } catch (e) {
+      iconURL =
+        "https://cdn0.iconfinder.com/data/icons/document-file-types/512/url-512.png";
+    }
+    return iconURL;
+  }
+  get isSocialLink(): boolean {
+    const link = this.previews ? this.previews[0].href : null;
+    if (link) {
+      return (
+        link.includes("instagram") ||
+        link.includes("fb") ||
+        link.includes("facebook") ||
+        link.includes("youtube") ||
+        link.includes("twitter") ||
+        link.includes("t.me") ||
+        link.includes(".mp4") ||
+        link.includes("image")
+      );
+    }
+    return false;
   }
 
   created() {
@@ -156,9 +226,14 @@ export default class PersonalChat extends Vue {
         } else {
           this.senderPic = res;
         }
+        // console.log(res);
       })
       .catch((error) => {
-        this.reciverPic = "/assets/user.png";
+        if (userType === "sender") {
+          this.senderPic = "/assets/user.png";
+        } else {
+          this.reciverPic = "/assets/user.png";
+        }
       });
   }
 }
@@ -166,7 +241,7 @@ export default class PersonalChat extends Vue {
 
 <style lang="scss" scoped>
 .chat-app {
-  min-height: 15rem;
+  min-height: 100%;
   margin-bottom: 7rem;
 
   .display-message {
@@ -175,7 +250,8 @@ export default class PersonalChat extends Vue {
     .my-message {
       display: flex;
       align-items: center;
-      padding-top: 1rem;
+      padding-top: 0.5rem;
+
       img {
         border-radius: 50%;
         width: 2.2rem;
@@ -186,7 +262,7 @@ export default class PersonalChat extends Vue {
         .message-content {
           margin-left: 0rem;
           margin-top: 1rem;
-          padding: 0.2rem 1rem 0.2rem 1rem;
+          padding: 0rem 0.4rem 0rem 0.5rem;
           background: rgb(212, 223, 245);
           border-radius: 0.5rem;
           color: rgb(50, 4, 95);
@@ -194,6 +270,8 @@ export default class PersonalChat extends Vue {
           flex-direction: column;
           font-size: 1rem;
           font-weight: bold;
+          word-break: break-all;
+          font-size: 0.8rem;
 
           .msg-email {
             font-size: 0.8rem;
@@ -201,9 +279,10 @@ export default class PersonalChat extends Vue {
           }
         }
         .msg-date-time {
-          margin-top: -0.9rem;
           order: 2;
           font-size: 0.8rem;
+          padding: 0.5rem 0rem;
+          color: rgb(149, 90, 226);
         }
       }
     }
@@ -239,22 +318,28 @@ export default class PersonalChat extends Vue {
     bottom: 0;
     left: 0;
     width: 100%;
-
     background: white;
-    form {
-      position: sticky;
-      bottom: 0;
-      top: 0;
-      display: flex;
-      background: white;
-      left: 0;
-      input {
-        box-shadow: none;
-      }
+  }
+}
+
+#EmojiPicker {
+  display: block;
+  width: 100%;
+  padding-top: 5px;
+  transition: 0.2s;
+  #Emojis {
+    height: 1rem !important;
+    .container-emoji {
+      height: 1rem !important;
     }
   }
-  .fa {
-    color: rgb(50, 4, 95);
-  }
+}
+
+.grid-emojis {
+  height: 1rem !important;
+}
+
+.prem {
+  margin-bottom: 0rem !important;
 }
 </style>

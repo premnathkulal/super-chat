@@ -4,3 +4,5 @@ declare module "*.vue" {
 }
 
 declare module "vuex-class";
+declare module "linkifyjs";
+declare module "linkifyjs/string";
