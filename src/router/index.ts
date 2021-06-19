@@ -14,13 +14,13 @@ const routes: Array<RouteConfig> = [
     path: "/",
     name: "Home",
     component: Home,
-    // children: [
-    //   {
-    //     path: "/",
-    //     name: "Contacts",
-    //     component: Contacts,
-    //   },
-    // ],
+    children: [
+      {
+        path: "/",
+        name: "Contacts",
+        component: Contacts,
+      },
+    ],
   },
   // {
   //   path: "/groupChat/:id?",
