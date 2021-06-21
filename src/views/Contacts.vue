@@ -6,42 +6,7 @@
           {{ !addContact ? "mdi-plus" : "mdi-close" }}
         </v-icon>
       </div>
-      <span v-if="addContact">
-        <v-text-field
-          ref="name"
-          v-model="name"
-          label="name"
-          placeholder="name"
-        ></v-text-field
-        ><v-text-field
-          ref="email"
-          v-model="email"
-          :rules="[
-            validateEmail(),
-            !invalidEmail || 'Invalid Email',
-            !emailExists || 'Email already exists',
-          ]"
-          label="Email"
-          placeholder="Email"
-          @keypress="
-            invalidEmail = false;
-            emailExists = false;
-          "
-        ></v-text-field>
-        <div class="button-field">
-          <v-btn
-            class="mt-5 add-btn"
-            color="primary"
-            :disabled="emailErrors"
-            @click="addToContactlist"
-          >
-            Add
-          </v-btn>
-          <v-btn class="mt-5 cancel-btn" @click="addContact = false">
-            cancel
-          </v-btn>
-        </div>
-      </span>
+      <AddContact v-if="addContact" @toggleFormField="toggleFormField" />
     </div>
     <div class="contacts-list mt-4">
       <template v-for="(contact, index) in allContactList">
@@ -52,10 +17,12 @@
 </template>
 
 <script lang="ts">
-import { ContactActions, UserActions } from "@/types/types";
+import { UserActions } from "@/types/types";
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import Contact from "@/components/Contact.vue";
+import AddContact from "@/components/AddContact.vue";
+import { ContactList } from "@/types/interface";
 
 const contact = namespace("Contacts");
 const user = namespace("User");
@@ -63,69 +30,46 @@ const user = namespace("User");
 @Component({
   components: {
     Contact,
+    AddContact,
   },
 })
 export default class Home extends Vue {
-  email = "";
-  name = "";
-  emailErrors = false;
-  invalidEmail = false;
-  emailExists = false;
+  allContactList: ContactList[] = [];
   addContact = false;
-  allContactList: any = [];
-  isLoading = false;
-
-  @contact.Action(ContactActions.ADD_CONTACT)
-  public addToContact!: (contact: { name: string; email: string }) => void;
 
   @contact.Getter("loadContacts")
-  public contactList!: any[];
+  public contactList!: ContactList[];
 
   @user.Action(UserActions.GET_USER_PIC)
   public getProfilePic!: (email: string) => Promise<string>;
 
   @Watch("contactList")
-  async updateProfilePics() {
-    this.setAllContactList();
+  async updateProfilePics(): Promise<void> {
+    await this.setAllContactList();
   }
 
-  validateEmail(): boolean | string {
-    // eslint-disable-next-line
-    const re =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (!this.email) {
-      this.emailErrors = true;
-      return "This field is Required";
-    } else if (!re.test(this.email)) {
-      this.emailErrors = true;
-      return "Enter valid Email";
-    }
-    this.emailErrors = false;
-    return true;
-  }
-
-  addToContactlist(): void {
-    this.addContact = false;
-    this.addToContact({ name: this.name, email: this.email });
-  }
-
-  async getDownloadUrl(userEmail: string, i: number): Promise<void> {
+  async getDownloadUrl(userEmail: string): Promise<void> {
     let picUrl;
     await this.getProfilePic(userEmail)
       .then((res: string) => {
         picUrl = res;
       })
-      .catch((error) => {
+      .catch(() => {
         picUrl = "/assets/user.png";
       });
     return picUrl;
   }
 
+  toggleFormField(): void {
+    this.addContact = !this.addContact;
+  }
+
   async setAllContactList(): Promise<void> {
     let arrayLength = 0;
-    new Promise((resolve, reject) => {
-      this.contactList.forEach(async (element, index) => {
-        element.picUrl = await this.getDownloadUrl(element.email, index);
+    new Promise((resolve) => {
+      this.contactList.forEach(async (element) => {
+        const url = await this.getDownloadUrl(element.email);
+        element.picUrl = url as unknown as string;
         arrayLength++;
         if (arrayLength === this.contactList.length) {
           resolve("Done");
@@ -140,7 +84,7 @@ export default class Home extends Vue {
       });
   }
 
-  created() {
+  created(): void {
     this.setAllContactList();
   }
 }
@@ -148,28 +92,12 @@ export default class Home extends Vue {
 
 <style lang="scss" scoped>
 .contacts {
-  .add-contact {
-    margin-top: 4rem;
-
-    .button-field {
-      display: flex;
-      width: 100%;
-
-      .add-btn {
-        width: 78%;
-      }
-      .cancel-btn {
-        margin-left: auto;
-        background: rgb(196, 235, 240);
-        width: 20%;
-      }
-    }
-  }
   .add-icon-field {
     display: flex;
     position: fixed;
     bottom: 20px;
     right: 20px;
+    z-index: 1000;
 
     .add-icon {
       margin-left: auto;
@@ -178,14 +106,6 @@ export default class Home extends Vue {
       border-radius: 50%;
       color: white;
       font-weight: bold;
-    }
-  }
-  .contact {
-    cursor: pointer;
-    background: #b0dee44b;
-    margin-bottom: 0.5rem;
-    &:hover {
-      background: #b0dee4b6;
     }
   }
 }

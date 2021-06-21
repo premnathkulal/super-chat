@@ -2,7 +2,6 @@
   <v-list-item @click="chatWithEmail(index)" class="contact">
     <v-list-item-avatar>
       <v-img
-        v-if="!isLoading"
         :alt="`${contact.name} avatar`"
         :src="contact.picUrl || '/assets/user.png'"
       ></v-img>
@@ -14,12 +13,13 @@
 </template>
 
 <script lang="ts">
+import { ContactList } from "@/types/interface";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class Contact extends Vue {
   @Prop({ default: "" }) index!: string;
-  @Prop({ default: [] }) contact!: any;
+  @Prop({ default: [] }) contact!: ContactList[];
 
   chatWithEmail(index: string): void {
     this.$router.push({ name: "PersonalChat", params: { id: index } });
@@ -28,4 +28,12 @@ export default class Contact extends Vue {
 </script>
 
 <style lang="scss">
+.contact {
+  cursor: pointer;
+  background: #b0dee44b;
+  margin-bottom: 0.5rem;
+  &:hover {
+    background: #b0dee4b6;
+  }
+}
 </style>

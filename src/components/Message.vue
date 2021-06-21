@@ -23,11 +23,12 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import * as linkify from "linkifyjs";
 import linkifyStr from "linkifyjs/string";
+import { Preview } from "@/types/interface";
 
 @Component
 export default class Message extends Vue {
   @Prop({ required: true }) message!: string;
-  previews: any[] | undefined;
+  previews: Preview[] | undefined;
   parsedMessage!: string;
 
   mounted(): void {
@@ -51,9 +52,10 @@ export default class Message extends Vue {
     return iconURL;
   }
 
-  created() {
+  created(): void {
     const links = linkify.find(this.message);
     this.previews = links.length > 0 ? links : undefined;
+    console.log(this.previews);
   }
 }
 </script>
@@ -63,23 +65,19 @@ export default class Message extends Vue {
   margin: 0 !important;
 }
 .message {
-  max-width: 20rem !important;
-}
+  max-width: 20rem;
+  .preview-link {
+    max-width: 20rem;
+    max-height: 8rem;
+    overflow: hidden;
+    display: flex;
+    background: #ffffff65;
+    justify-content: flex-start;
 
-.preview-link {
-  max-width: 20rem !important;
-  max-height: 8rem !important;
-  overflow: hidden;
-  display: flex;
-  background: #ffffff65;
-  justify-content: flex-start;
-
-  .link-image {
-    border-radius: 0;
-    width: 4rem !important;
-  }
-  .link-text {
-    // color: white;
+    .link-image {
+      border-radius: 0;
+      width: 4rem;
+    }
   }
 }
 </style>

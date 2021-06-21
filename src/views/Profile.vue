@@ -37,10 +37,9 @@ const user = namespace("User");
 @Component
 export default class Home extends Vue {
   user = firebase.auth().currentUser;
-  uploadTask: any = {};
   userEmail: string | null = "";
   isLoading = false;
-  downloadURL: any = "";
+  downloadURL = "";
 
   profile: UserProfile = {
     profilePic: "",
@@ -54,10 +53,10 @@ export default class Home extends Vue {
   @user.Action(UserActions.GET_USER_PIC)
   public getProfilePic!: (email: string) => Promise<void>;
 
-  detectFiles(fileList: any) {
+  detectFiles(fileList: FileList): void {
     this.isLoading = true;
     const storage = firebase.storage();
-    this.uploadTask = storage
+    storage
       .ref(`${this.userEmail}-profilePic`)
       .put(fileList[0])
       .then((res) => {
@@ -73,8 +72,7 @@ export default class Home extends Vue {
     if (this.user) {
       this.userEmail = this.user.email;
       this.getProfilePic(this.userEmail as string).then((res) => {
-        console.log(res);
-        this.downloadURL = res;
+        this.downloadURL = res as unknown as string;
       });
     }
   }

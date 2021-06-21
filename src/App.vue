@@ -91,18 +91,15 @@ export default class ChatApp extends Vue {
   pageName = "";
 
   @user.Action(UserActions.SET_USER_ID_EMAIL)
-  public setUserIdemail!: (userIdEmail: any | null) => void;
+  public setUserIdemail!: (
+    userIdEmail: { email: string | null; uid: string } | null
+  ) => void;
 
   @contact.Action(ContactActions.SET_USER_ID)
   public setUserId!: (userId: string | null) => void;
 
   @contact.Action(ContactActions.LOAD_CONTACTS)
   public loadContacts!: () => void;
-
-  logout(): void {
-    firebase.auth().signOut();
-    this.user = null;
-  }
 
   async setUserInfo(): Promise<void> {
     this.isOnline = window.navigator.onLine;
@@ -114,15 +111,15 @@ export default class ChatApp extends Vue {
   }
 
   @Watch("$route.name")
-  setTopBar() {
-    const routeName: any[] = ["Profile", "Group", "PersonalChat"];
+  setTopBar(): void {
+    type routeNames = Array<string | null | undefined>;
+    const routeName: routeNames = ["Profile", "Group", "PersonalChat"];
     this.homePage = true;
     this.pageName = "";
     if (routeName.includes(this.$route.name)) {
       this.homePage = false;
       this.pageName = this.$route.name as string;
     }
-    console.log(this.$route.name);
   }
 
   navigate(name: string): void {
@@ -135,6 +132,11 @@ export default class ChatApp extends Vue {
         router.push({ name });
       }
     }
+  }
+
+  logout(): void {
+    firebase.auth().signOut();
+    this.user = null;
   }
 
   created(): void {

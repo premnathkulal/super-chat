@@ -1,16 +1,18 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
 import { ContactActions, ContactMutations } from "@/types/types";
 import { updateContactList, getContactList } from "@/utils/api";
+import { ContactList } from "@/types/interface";
+import { AxiosResponse } from "axios";
 
 @Module({ namespaced: true })
 class Contacts extends VuexModule {
-  public contactList: any[] = [];
+  public contactList: ContactList[] = [];
   public isLoggedIn = false;
   public uid: string | null = null;
 
   @Mutation
   public async [ContactMutations.LOAD_CONTACTS](): Promise<void> {
-    getContactList(this.uid).then((response: any) => {
+    getContactList(this.uid).then((response: AxiosResponse) => {
       this.contactList = response.data || [];
     });
   }
@@ -50,7 +52,7 @@ class Contacts extends VuexModule {
     this.context.commit(ContactMutations.SET_USER_ID, uid);
   }
 
-  get loadContacts(): any {
+  get loadContacts(): ContactList[] {
     return this.contactList;
   }
 }
