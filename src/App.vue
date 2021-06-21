@@ -3,19 +3,13 @@
     <v-app>
       <v-app-bar app color="primary" dark>
         <div @click="navigate('Home')" class="d-flex align-center">
-          <v-img
-            alt="Vuetify Logo"
-            class="shrink mr-2"
-            contain
-            src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-            transition="scale-transition"
-            width="40"
-          />
-          <h5 class="mr-2" :style="{ cursor: 'pointer' }">Super Chat</h5>
+          <h5 v-if="homePage" class="mr-2" :style="{ cursor: 'pointer' }">
+            Super Chat
+          </h5>
+          <v-icon v-else>mdi-arrow-left</v-icon
+          ><strong class="ml-5">{{ this.pageName }}</strong>
         </div>
-
         <v-spacer></v-spacer>
-
         <v-menu bottom left>
           <template v-slot:activator="{ on, attrs }">
             <v-btn dark icon v-bind="attrs" v-on="on">
@@ -72,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import firebase from "firebase";
 import Login from "@/components/Login.vue";
@@ -93,6 +87,8 @@ export default class ChatApp extends Vue {
   dialog = false;
   user = firebase.auth().currentUser;
   isOnline = false;
+  homePage = true;
+  pageName = "";
 
   @user.Action(UserActions.SET_USER_ID_EMAIL)
   public setUserIdemail!: (userIdEmail: any | null) => void;
@@ -108,6 +104,27 @@ export default class ChatApp extends Vue {
     this.user = null;
   }
 
+  async setUserInfo(): Promise<void> {
+    this.isOnline = window.navigator.onLine;
+    if (this.user) {
+      await this.setUserId(this.user.uid);
+      await this.setUserIdemail({ email: this.user.email, uid: this.user.uid });
+      await this.loadContacts();
+    }
+  }
+
+  @Watch("$route.name")
+  setTopBar() {
+    const routeName: any[] = ["Profile", "Group", "PersonalChat"];
+    this.homePage = true;
+    this.pageName = "";
+    if (routeName.includes(this.$route.name)) {
+      this.homePage = false;
+      this.pageName = this.$route.name as string;
+    }
+    console.log(this.$route.name);
+  }
+
   navigate(name: string): void {
     if (this.user) {
       if (name === "Home" && router.currentRoute.name !== "Contacts") {
@@ -120,13 +137,9 @@ export default class ChatApp extends Vue {
     }
   }
 
-  async created(): Promise<void> {
-    this.isOnline = window.navigator.onLine;
-    if (this.user) {
-      await this.setUserId(this.user.uid);
-      await this.setUserIdemail({ email: this.user.email, uid: this.user.uid });
-      await this.loadContacts();
-    }
+  created(): void {
+    this.setUserInfo();
+    this.setTopBar();
   }
 }
 </script>

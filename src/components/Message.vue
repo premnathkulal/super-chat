@@ -42,12 +42,12 @@ export default class Message extends Vue {
   get favicon(): string {
     const link = this.previews ? this.previews[0].href : undefined;
     let iconURL = `http://${link?.split("/")[2].split("?")[0]}/favicon.ico`;
-    try {
-      //  fetch(iconURL);
-    } catch (e) {
-      iconURL =
-        "https://cdn0.iconfinder.com/data/icons/document-file-types/512/url-512.png";
-    }
+    // try {
+    //   //  fetch(iconURL);
+    // } catch (e) {
+    //   iconURL =
+    //     "https://cdn0.iconfinder.com/data/icons/document-file-types/512/url-512.png";
+    // }
     return iconURL;
   }
 
