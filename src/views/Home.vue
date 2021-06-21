@@ -21,24 +21,12 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { tabptions } from "@/utils/uiData";
 
 @Component
 export default class Home extends Vue {
   tab = "Contacts";
-  tabptions = [
-    {
-      title: "Contacts",
-      icon: "mdi-phone",
-    },
-    {
-      title: "Group",
-      icon: "mdi-account-group",
-    },
-    {
-      title: "Profile",
-      icon: "mdi-account",
-    },
-  ];
+  tabptions = tabptions;
 
   loadTab(name: string): void {
     this.tab = name;
@@ -64,7 +52,7 @@ export default class Home extends Vue {
     padding: 0 !important;
     cursor: pointer;
 
-    .tab-item {
+    &-item {
       width: 43.33%;
       background: rgb(199, 223, 236);
       display: flex;

@@ -1,5 +1,5 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
-import { ContactActions, ContactMutations } from "@/utils/types";
+import { ContactActions, ContactMutations } from "@/types/types";
 import { updateContactList, getContactList } from "@/utils/api";
 
 @Module({ namespaced: true })

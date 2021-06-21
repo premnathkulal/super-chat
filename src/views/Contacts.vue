@@ -1,10 +1,12 @@
 <template>
   <div class="container contacts">
     <div class="add-contact">
-      <div v-if="!addContact" @click="addContact = true" class="add-icon-field">
-        <v-icon class="add-icon">mdi-plus</v-icon>
+      <div @click="addContact = !addContact" class="add-icon-field">
+        <v-icon class="add-icon">
+          {{ !addContact ? "mdi-plus" : "mdi-close" }}
+        </v-icon>
       </div>
-      <span v-else>
+      <span v-if="addContact">
         <v-text-field
           ref="name"
           v-model="name"
@@ -62,7 +64,7 @@
 
 <script lang="ts">
 import router from "@/router";
-import { ContactActions, UserActions } from "@/utils/types";
+import { ContactActions, UserActions } from "@/types/types";
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
@@ -172,6 +174,10 @@ export default class Home extends Vue {
   }
   .add-icon-field {
     display: flex;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+
     .add-icon {
       margin-left: auto;
       background: rgb(103, 106, 247);

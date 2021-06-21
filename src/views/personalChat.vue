@@ -85,7 +85,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import firebase from "firebase";
 import { namespace } from "vuex-class";
-import { UserActions } from "@/utils/types";
+import { UserActions } from "@/types/types";
 import { VEmojiPicker } from "v-emoji-picker";
 import { Emoji } from "v-emoji-picker/lib/models/Emoji";
 import * as linkify from "linkifyjs";

@@ -1,5 +1,5 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
-import { UserActions, UserMutations } from "@/utils/types";
+import { UserActions, UserMutations } from "@/types/types";
 import { updateUserInfo, updateProfilePic, getProfilePic } from "@/utils/api";
 
 @Module({ namespaced: true })

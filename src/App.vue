@@ -72,7 +72,7 @@ import firebase from "firebase";
 import Login from "@/components/Login.vue";
 import ErrorPages from "@/components/ErrorPages.vue";
 import router from "./router";
-import { ContactActions, UserActions } from "./utils/types";
+import { ContactActions, UserActions } from "@/types/types";
 
 const contact = namespace("Contacts");
 const user = namespace("User");

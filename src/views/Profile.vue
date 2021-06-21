@@ -1,6 +1,5 @@
 <template>
   <div class="profile-page">
-    <!-- <img  /> -->
     <div class="image-upload">
       <label for="file-input">
         <v-avatar size="200">
@@ -31,7 +30,8 @@
 import { Vue, Component } from "vue-property-decorator";
 import firebase from "firebase";
 import { namespace } from "vuex-class";
-import { UserActions } from "@/utils/types";
+import { UserActions } from "@/types/types";
+import { UserProfile } from "@/types/interface";
 
 const user = namespace("User");
 @Component
@@ -42,11 +42,7 @@ export default class Home extends Vue {
   isLoading = false;
   downloadURL: any = "";
 
-  profile: {
-    profilePic: string;
-    name: string;
-    phoneNumber: string;
-  } = {
+  profile: UserProfile = {
     profilePic: "",
     name: "",
     phoneNumber: "",
@@ -73,7 +69,7 @@ export default class Home extends Vue {
       });
   }
 
-  created(): void {
+  setUserInformations(): void {
     if (this.user) {
       this.userEmail = this.user.email;
       this.getProfilePic(this.userEmail as string).then((res) => {
@@ -81,6 +77,10 @@ export default class Home extends Vue {
         this.downloadURL = res;
       });
     }
+  }
+
+  created(): void {
+    this.setUserInformations();
   }
 }
 </script>
