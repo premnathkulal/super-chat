@@ -45,33 +45,26 @@
     </div>
     <div class="contacts-list mt-4">
       <template v-for="(contact, index) in allContactList">
-        <v-list-item :key="index" @click="chatWithEmail(index)" class="contact">
-          <v-list-item-avatar>
-            <v-img
-              v-if="!isLoading"
-              :alt="`${contact.name} avatar`"
-              :src="contact.picUrl || '/assets/user.png'"
-            ></v-img>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title v-text="contact.name"></v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <contact :key="index" :index="index" :contact="contact" />
       </template>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import router from "@/router";
 import { ContactActions, UserActions } from "@/types/types";
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
+import Contact from "@/components/Contact.vue";
 
 const contact = namespace("Contacts");
 const user = namespace("User");
 
-@Component
+@Component({
+  components: {
+    Contact,
+  },
+})
 export default class Home extends Vue {
   email = "";
   name = "";
@@ -116,10 +109,6 @@ export default class Home extends Vue {
     this.addToContact({ name: this.name, email: this.email });
   }
 
-  chatWithEmail(index: string): void {
-    router.push({ name: "PersonalChat", params: { id: index } });
-  }
-
   async getDownloadUrl(userEmail: string, i: number): Promise<void> {
     let picUrl;
     await this.getProfilePic(userEmail)
@@ -132,19 +121,23 @@ export default class Home extends Vue {
     return picUrl;
   }
 
-  setAllContactList(): void {
-    this.contactList.forEach(async (element, index) => {
-      if (
-        this.allContactList.findIndex(
-          (obj: any) => obj.email === element.email
-        ) === -1
-      ) {
-        this.allContactList.push({
-          ...element,
-          picUrl: await this.getDownloadUrl(element.email, index),
-        });
-      }
-    });
+  async setAllContactList(): Promise<void> {
+    let arrayLength = 0;
+    new Promise((resolve, reject) => {
+      this.contactList.forEach(async (element, index) => {
+        element.picUrl = await this.getDownloadUrl(element.email, index);
+        arrayLength++;
+        if (arrayLength === this.contactList.length) {
+          resolve("Done");
+        }
+      });
+    })
+      .then(() => {
+        this.allContactList = { ...this.contactList };
+      })
+      .catch(() => {
+        console.log("Error");
+      });
   }
 
   created() {
