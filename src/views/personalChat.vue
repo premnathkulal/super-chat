@@ -4,7 +4,7 @@
       <DisplyMessages
         :messageId="messageId"
         :reciverEmail="reciverEmail"
-        @scrollPage="scrollPage"
+        @scrollPage="scrollToTop"
       />
     </div>
     <v-footer>
@@ -44,7 +44,7 @@ export default class PersonalChat extends Vue {
   @user.Action(UserActions.GET_USER_PIC)
   public getProfilePic!: (email: string) => Promise<string>;
 
-  scrollPage(): void {
+  scrollToTop(): void {
     window.scrollTo(
       0,
       document.body.scrollHeight || document.documentElement.scrollHeight
@@ -64,6 +64,7 @@ export default class PersonalChat extends Vue {
   }
 
   created(): void {
+    const chatMessages: any = document.querySelector(".personal-chat-app");
     setTimeout(() => {
       this.createMessageId();
     }, 1000);

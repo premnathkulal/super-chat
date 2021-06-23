@@ -10,6 +10,7 @@ class User extends VuexModule {
     email: "",
   };
   public downloadUrl: string | null = "";
+  public messageDisplayUserId = "";
 
   @Action
   async [UserActions.GET_USER_PIC](email: string): Promise<string> {
@@ -41,6 +42,20 @@ class User extends VuexModule {
     uidEmail: { uid: string; email: string } | null
   ): void {
     this.context.commit(UserMutations.SET_USER_ID_EMAIL, uidEmail);
+  }
+
+  @Mutation
+  public ["prem_m"](userId: string): void {
+    this.messageDisplayUserId = userId;
+  }
+
+  @Action
+  ["prem_a"](userId: string): void {
+    this.context.commit("prem_m", userId);
+  }
+
+  get getUserId(): string {
+    return this.messageDisplayUserId;
   }
 }
 export default User;

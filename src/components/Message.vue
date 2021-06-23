@@ -55,7 +55,6 @@ export default class Message extends Vue {
   created(): void {
     const links = linkify.find(this.message);
     this.previews = links.length > 0 ? links : undefined;
-    console.log(this.previews);
   }
 }
 </script>

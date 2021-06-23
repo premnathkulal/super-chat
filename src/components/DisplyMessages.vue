@@ -6,25 +6,6 @@
       :class="msg.userUID === user.uid ? 'my-message' : ''"
       class="message"
     >
-      <v-list-item-avatar class="img" v-if="reciverPic || senderPic">
-        <v-img
-          :src="
-            msg.userUID !== user.uid
-              ? senderPic || '/assets/user.png'
-              : reciverPic || '/assets/user.png'
-          "
-          :alt="msg.displayName"
-        ></v-img>
-      </v-list-item-avatar>
-      <div
-        v-else
-        class="alt-profile-pic img mr-2"
-        :style="{
-          background: getColor(msg.email.length),
-        }"
-      >
-        <span>{{ msg.email.slice(0, 2) }}</span>
-      </div>
       <div class="user-message">
         <div class="message-content">
           <!-- <span v-if="msg.userUID !== user.uid" class="msg-email">{{
@@ -36,6 +17,27 @@
             <span class="msg-time ml-auto">{{ getTime(msg.createdAt) }}</span>
           </div>
         </div>
+        <!-- <div class="user-pic" v-if="!imageLoading">
+          <v-list-item-avatar class="img" v-if="reciverPic || senderPic">
+            <v-img
+              :src="
+                msg.userUID !== user.uid
+                  ? senderPic || '/assets/user.png'
+                  : reciverPic || '/assets/user.png'
+              "
+              :alt="msg.displayName"
+            ></v-img>
+          </v-list-item-avatar>
+          <div
+            v-else
+            class="alt-profile-pic img mr-2"
+            :style="{
+              background: getColor(msg.email.length),
+            }"
+          >
+            <span>{{ msg.email.slice(0, 2) }}</span>
+          </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -66,6 +68,7 @@ export default class DisplyMessages extends Vue {
   reciverPic = "";
   senderPic = "";
   colorList = ["#a1f5c17c", "#cba9f37c", "#f7adf77c", "#e7a7817c", "#b5eeba7c"];
+  imageLoading = false;
 
   @Prop({ default: "" }) messageId!: string;
   @Prop({ default: "" }) reciverEmail!: string;
@@ -102,6 +105,12 @@ export default class DisplyMessages extends Vue {
             this.allMessages = querySnap.docs.map((doc) =>
               doc.data()
             ) as Message[];
+            this.$nextTick(function () {
+              const chatMessages: any =
+                // document.querySelector(".display-message");
+                this.$emit("scrollPage");
+              // chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
           });
         this.getDownloadUrl(this.user.email as string, "sender");
         this.getDownloadUrl(this.reciverEmail as string, "reciver");
@@ -110,6 +119,7 @@ export default class DisplyMessages extends Vue {
   }
 
   getDownloadUrl(userEmail: string, userType: string): void {
+    this.imageLoading = true;
     this.getProfilePic(userEmail)
       .then((res: string) => {
         if (userType === "sender") {
@@ -117,6 +127,7 @@ export default class DisplyMessages extends Vue {
         } else {
           this.senderPic = res;
         }
+        this.imageLoading = false;
       })
       .catch(() => {
         if (userType === "sender") {
@@ -124,11 +135,8 @@ export default class DisplyMessages extends Vue {
         } else {
           this.reciverPic = "/assets/user.png";
         }
+        this.imageLoading = false;
       });
-  }
-
-  updated(): void {
-    this.$emit("scrollPage");
   }
 
   created(): void {
@@ -178,18 +186,21 @@ export default class DisplyMessages extends Vue {
         padding: 0.5rem 0rem;
         color: rgb(149, 90, 226);
       }
+
+      .user-pic {
+        align-self: flex-start;
+      }
     }
   }
 
   .my-message {
     justify-content: flex-end;
-    .img {
-      order: 2;
-    }
     .message-content {
       margin-right: 0.5rem;
       background: rgb(215, 243, 206);
-      order: 1;
+    }
+    .user-pic {
+      align-self: flex-end !important;
     }
   }
 
