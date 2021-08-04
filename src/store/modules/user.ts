@@ -11,11 +11,20 @@ class User extends VuexModule {
   };
   public downloadUrl: string | null = "";
   public messageDisplayUserId = "";
+  public picUrl = "";
+
+  @Mutation
+  public [UserMutations.GET_USER_PIC](picUrl: string): void {
+    this.picUrl = picUrl;
+  }
 
   @Action
-  async [UserActions.GET_USER_PIC](email: string): Promise<string> {
-    return await getProfilePic(email.split("@")[0]).then((res) => {
-      return res.data.downloadUrl;
+  [UserActions.GET_USER_PIC](email: string): void {
+    getProfilePic(email.split("@")[0]).then((res) => {
+      this.context.commit(
+        UserMutations.GET_USER_PIC,
+        res.data?.downloadUrl || ""
+      );
     });
   }
 
@@ -56,6 +65,10 @@ class User extends VuexModule {
 
   get getUserId(): string {
     return this.messageDisplayUserId;
+  }
+
+  get getProfilePic(): string {
+    return this.picUrl;
   }
 }
 export default User;

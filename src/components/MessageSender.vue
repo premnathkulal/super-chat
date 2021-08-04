@@ -31,6 +31,7 @@
           @click:prepend="showEmojies = !showEmojies"
           @click:append-outer="sendMessage"
           @keypress.prevent.enter="sendMessage"
+          @input="messageTyping()"
         ></v-textarea>
       </form>
     </div>
@@ -42,6 +43,10 @@ import { VEmojiPicker } from "v-emoji-picker";
 import { Emoji } from "v-emoji-picker/lib/models/Emoji";
 import { Vue, Component, Prop } from "vue-property-decorator";
 import firebase from "firebase";
+import { namespace } from "vuex-class";
+import { SocketActions } from "@/types/types";
+
+const socket = namespace("Socket");
 
 @Component({
   components: {
@@ -55,6 +60,9 @@ export default class MessageSender extends Vue {
   message = "";
 
   @Prop({ default: "" }) messageId!: string;
+
+  @socket.Action(SocketActions.STARTED_TYPING)
+  public userTyping!: (email: string) => void;
 
   async sendMessage(): Promise<void> {
     if (this.message) {
@@ -74,6 +82,12 @@ export default class MessageSender extends Vue {
 
   selectEmoji(emoji: Emoji): void {
     this.message = this.message + emoji.data;
+  }
+
+  messageTyping(): void {
+    if (this.user) {
+      this.userTyping(this.user.email as string);
+    }
   }
 }
 </script>

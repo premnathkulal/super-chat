@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import firebase from "firebase";
 import { namespace } from "vuex-class";
 import { UserActions } from "@/types/types";
@@ -47,11 +47,19 @@ export default class Home extends Vue {
     phoneNumber: "",
   };
 
+  @user.Getter("getProfilePic")
+  public picUrl!: string;
+
   @user.Action(UserActions.SET_USER_PIC)
   public updatePic!: (downloadURL: string) => void;
 
   @user.Action(UserActions.GET_USER_PIC)
   public getProfilePic!: (email: string) => Promise<void>;
+
+  @Watch("picUrl")
+  setProfilePic(): void {
+    this.downloadURL = this.picUrl;
+  }
 
   detectFiles(fileList: FileList): void {
     this.isLoading = true;
@@ -71,9 +79,7 @@ export default class Home extends Vue {
   setUserInformations(): void {
     if (this.user) {
       this.userEmail = this.user.email;
-      this.getProfilePic(this.userEmail as string).then((res) => {
-        this.downloadURL = res as unknown as string;
-      });
+      this.getProfilePic(this.userEmail as string);
     }
   }
 

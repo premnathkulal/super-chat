@@ -5,7 +5,10 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "server:watch": "nodemon --watch 'src/**/*.ts' --exec \"node\" server/server.js",
+    "start": "node server/server.js",
+    "postinstall": "if test \"$NODE_ENV\" = \"production\" ; then yarn build ; fi "
   },
   "dependencies": {
     "@lottiefiles/lottie-player": "^1.0.4",
@@ -47,6 +50,7 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^6.2.2",
     "node-sass": "^4.12.0",
+    "nodemon": "^2.0.7",
     "prettier": "^2.2.1",
     "sass": "~1.32.0",
     "sass-loader": "^10.0.0",

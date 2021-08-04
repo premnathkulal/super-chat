@@ -12,6 +12,7 @@
               msg.email
             }}</span> -->
           <Message :message="msg.text" />
+
           <div class="d-flex msg-date-time pt-4">
             <!-- <span class="msg-date mr-1">{{ getDate(msg.createdAt) }}</span> -->
             <span class="msg-time ml-auto">{{ getTime(msg.createdAt) }}</span>

@@ -2,9 +2,9 @@
   <div id="app">
     <v-app>
       <v-app-bar app color="primary" dark>
-        <div @click="navigate('Home')" class="d-flex align-center">
+        <div @click="navigate('Home')" class="d-flex align-center brand">
           <h5 v-if="homePage" class="mr-2" :style="{ cursor: 'pointer' }">
-            Super Chat
+            {{ welcomeMessage || "Welcome" }}
           </h5>
           <v-icon v-else>mdi-arrow-left</v-icon
           ><strong class="ml-5">{{ this.pageName }}</strong>
@@ -23,7 +23,7 @@
                 <span class="mr-2">Login</span>
               </v-btn>
               <v-btn v-else text @click="logout()">
-                <span class="mr-2">Logout</span>
+                <span class="mr-2">Logoutsss</span>
               </v-btn>
             </v-list-item>
             <v-list-item>
@@ -72,10 +72,11 @@ import firebase from "firebase";
 import Login from "@/components/Login.vue";
 import ErrorPages from "@/components/ErrorPages.vue";
 import router from "./router";
-import { ContactActions, UserActions } from "@/types/types";
+import { ContactActions, SocketActions, UserActions } from "@/types/types";
 
 const contact = namespace("Contacts");
 const user = namespace("User");
+const socket = namespace("Socket");
 
 @Component({
   components: {
@@ -85,10 +86,13 @@ const user = namespace("User");
 })
 export default class ChatApp extends Vue {
   dialog = false;
-  user = firebase.auth().currentUser;
+  user: any = firebase.auth().currentUser;
   isOnline = false;
   homePage = true;
   pageName = "";
+
+  @socket.Getter("getWelcomeMessage")
+  public welcomeMessage!: string;
 
   @user.Action(UserActions.SET_USER_ID_EMAIL)
   public setUserIdemail!: (
@@ -100,6 +104,9 @@ export default class ChatApp extends Vue {
 
   @contact.Action(ContactActions.LOAD_CONTACTS)
   public loadContacts!: () => void;
+
+  @socket.Action(SocketActions.CONNECTION)
+  public connectToWsServer!: (userDetails: { email: string }) => void;
 
   async setUserInfo(): Promise<void> {
     this.isOnline = window.navigator.onLine;
@@ -142,6 +149,20 @@ export default class ChatApp extends Vue {
   created(): void {
     this.setUserInfo();
     this.setTopBar();
+    if (this.user) {
+      const userDetails = {
+        email: this.user.email,
+      };
+      this.connectToWsServer(userDetails);
+    }
   }
 }
 </script>
+
+<style lang="scss">
+#app {
+  .brand {
+    text-transform: capitalize;
+  }
+}
+</style>
