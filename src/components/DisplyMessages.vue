@@ -1,46 +1,37 @@
 <template>
   <div class="display-message">
     <div
-      v-for="(msg, index) in allMessages"
+      v-for="(msg, index) in personal[0].messages"
       :key="index"
-      :class="msg.userUID === user.uid ? 'my-message' : ''"
+      :class="'navin123' === msg.from ? 'my-message' : ''"
       class="message"
     >
-      <div class="user-message">
-        <div class="message-content">
-          <!-- <span v-if="msg.userUID !== user.uid" class="msg-email">{{
-              msg.email
-            }}</span> -->
-          <Message :message="msg.text" />
-
-          <div class="d-flex msg-date-time pt-4">
-            <!-- <span class="msg-date mr-1">{{ getDate(msg.createdAt) }}</span> -->
-            <span class="msg-time ml-auto">{{ getTime(msg.createdAt) }}</span>
-          </div>
+      <div class="user-pic" v-if="!(index + 1 === personal[0].messages.length)">
+        <div
+          v-if="
+            index + 1 !== personal[0].messages.length &&
+            msg.from !== personal[0].messages[index + 1].from
+          "
+        >
+          <img
+            class="img"
+            :src="`https://avatars.dicebear.com/api/avataaars/${msg.from}.svg`"
+          />
         </div>
-        <!-- <div class="user-pic" v-if="!imageLoading">
-          <v-list-item-avatar class="img" v-if="reciverPic || senderPic">
-            <v-img
-              :src="
-                msg.userUID !== user.uid
-                  ? senderPic || '/assets/user.png'
-                  : reciverPic || '/assets/user.png'
-              "
-              :alt="msg.displayName"
-            ></v-img>
-          </v-list-item-avatar>
-          <div
-            v-else
-            class="alt-profile-pic img mr-2"
-            :style="{
-              background: getColor(msg.email.length),
-            }"
-          >
-            <span>{{ msg.email.slice(0, 2) }}</span>
-          </div>
-        </div> -->
+      </div>
+      <div v-if="index + 1 === personal[0].messages.length" class="user-pic">
+        <img
+          class="img"
+          :src="`https://avatars.dicebear.com/api/avataaars/${msg.from}.svg`"
+        />
+      </div>
+      <div class="message-contents">
+        <div class="user-name">{{ msg.from }}</div>
+        <div class="message">{{ msg.message }}</div>
+        <div class="time">{{ "10:00AM" }}</div>
       </div>
     </div>
+    <div @click="prem()">prem</div>
   </div>
 </template>
 
@@ -50,7 +41,7 @@ import firebase from "firebase";
 import { namespace } from "vuex-class";
 import { UserActions } from "@/types/types";
 import Message from "@/components/Message.vue";
-import MessageSender from "@/components/MessageSender.vue";
+import MessageSender from "@/components/MessageInput.vue";
 import { ContactList } from "@/types/interface";
 
 const contact = namespace("Contacts");
@@ -70,6 +61,235 @@ export default class DisplyMessages extends Vue {
   senderPic = "";
   colorList = ["#a1f5c17c", "#cba9f37c", "#f7adf77c", "#e7a7817c", "#b5eeba7c"];
   imageLoading = false;
+  personal = [
+    {
+      id: "messageID_1",
+      messageId: "navin123-pramod456",
+      category: "personal",
+      messages: [
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "lets start",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "Hello. Pramod",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "Hello. Navin",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "Hope you are doing well",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "Yeah",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "How r u Navin?",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "I saw u near the park today morning",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "Oh I just went for quick walk",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "From tomorrow I'll join you",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "Yeah, sure Pramod",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "I saw u near the park today morning",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "Oh I just went for quick walk",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "From tomorrow I'll join you",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "Yeah, sure Pramod",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "I saw u near the park today morning",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "Oh I just went for quick walk",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "From tomorrow I'll join you",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "Yeah, sure Pramod",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "I saw u near the park today morning",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "Oh I just went for quick walk",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "From tomorrow I'll join you",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "Yeah, sure Pramod",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "I saw u near the park today morning",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "Oh I just went for quick walk",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "From tomorrow I'll join you",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "Yeah, sure Pramod",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "I saw u near the park today morning",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "Oh I just went for quick walk",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "From tomorrow I'll join you",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "Yeah, sure Pramod",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "I saw u near the park today morning",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "Oh I just went for quick walk",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "From tomorrow I'll join you",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "End of the chat",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "End of the chat",
+        },
+      ],
+    },
+  ];
+
+  prem(): void {
+    this.personal[0].messages.push({
+      from: "navin123",
+      top: "pramod456",
+      time: "Tue Aug 17 2021 17:37:51",
+      message:
+        "lets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets start",
+    });
+  }
 
   @Prop({ default: "" }) messageId!: string;
   @Prop({ default: "" }) reciverEmail!: string;
@@ -96,28 +316,28 @@ export default class DisplyMessages extends Vue {
     return new Date(timestamp).toString().slice(15, 21);
   }
 
-  getMessages(): void {
-    setTimeout(() => {
-      if (this.user) {
-        this.db
-          .collection(this.messageId)
-          .orderBy("createdAt")
-          .onSnapshot((querySnap) => {
-            this.allMessages = querySnap.docs.map((doc) =>
-              doc.data()
-            ) as Message[];
-            this.$nextTick(function () {
-              const chatMessages: any =
-                // document.querySelector(".display-message");
-                this.$emit("scrollPage");
-              // chatMessages.scrollTop = chatMessages.scrollHeight;
-            });
-          });
-        this.getDownloadUrl(this.user.email as string, "sender");
-        this.getDownloadUrl(this.reciverEmail as string, "reciver");
-      }
-    }, 1000);
-  }
+  // getMessages(): void {
+  //   setTimeout(() => {
+  //     if (this.user) {
+  //       this.db
+  //         .collection(this.messageId)
+  //         .orderBy("createdAt")
+  //         .onSnapshot((querySnap) => {
+  //           this.allMessages = querySnap.docs.map((doc) =>
+  //             doc.data()
+  //           ) as Message[];
+  //           this.$nextTick(function () {
+  //             const chatMessages: any =
+  //               // document.querySelector(".display-message");
+  //               this.$emit("scrollPage");
+  //             // chatMessages.scrollTop = chatMessages.scrollHeight;
+  //           });
+  //         });
+  //       this.getDownloadUrl(this.user.email as string, "sender");
+  //       this.getDownloadUrl(this.reciverEmail as string, "reciver");
+  //     }
+  //   }, 1000);
+  // }
 
   getDownloadUrl(userEmail: string, userType: string): void {
     this.imageLoading = true;
@@ -141,81 +361,69 @@ export default class DisplyMessages extends Vue {
   }
 
   created(): void {
-    this.getMessages();
+    //
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .display-message {
-  margin-bottom: 2rem;
+  margin: 1rem 0.4rem;
   .message,
   .my-message {
     display: flex;
-    align-items: center;
-    padding-top: 0.5rem;
+    align-items: flex-end;
 
-    img {
-      border-radius: 50%;
-      width: 2.2rem;
-    }
-    .user-message {
-      display: flex;
-      flex-direction: column;
-      .message-content {
-        margin-left: 0rem;
-        margin-top: 1rem;
-        padding: 0rem 0.4rem 0rem 0.5rem;
-        background: rgb(212, 223, 245);
-        border-radius: 0.5rem;
-        color: rgb(50, 4, 95);
-        display: flex;
-        flex-direction: column;
-        font-size: 1rem;
+    .message-contents {
+      margin-top: 0.5rem;
+      padding: 0.2rem 0.5rem;
+      background: #6e4ead;
+      color: white;
+      border-radius: 0.3rem;
+      max-width: 15rem;
+
+      .user-name {
         font-weight: bold;
-        word-break: break-all;
-        font-size: 0.8rem;
-
-        .msg-email {
-          font-size: 0.8rem;
-          font-weight: normal;
-        }
       }
-      .msg-date-time {
-        order: 2;
-        font-size: 0.8rem;
-        padding: 0.5rem 0rem;
-        color: rgb(149, 90, 226);
+      .time {
+        font-size: 0.6rem;
+        text-align: right;
       }
+    }
 
-      .user-pic {
-        align-self: flex-start;
+    .user-pic {
+      height: 2rem;
+      width: 2rem;
+      margin-right: 0.5rem;
+
+      .img {
+        height: 2rem;
+        width: 2rem;
+        border-radius: 50%;
       }
     }
   }
 
   .my-message {
     justify-content: flex-end;
-    .message-content {
-      margin-right: 0.5rem;
-      background: rgb(215, 243, 206);
+
+    .message-contents {
+      margin-top: 0.5rem;
+      padding: 0.4rem;
+      background: #d8ceec;
+      color: rgb(53, 51, 51);
+      border-radius: 0.3rem;
+      order: 1;
+
+      .user-name {
+        display: none;
+      }
     }
     .user-pic {
-      align-self: flex-end !important;
+      order: 2;
+      margin-right: 0rem;
+      margin-left: 0.5rem;
     }
-  }
-
-  .alt-profile-pic {
-    width: 2.2rem;
-    height: 2.2rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-transform: uppercase;
-    padding: 1.15rem;
-    font-weight: bold;
-    color: rgb(2, 2, 2);
   }
 }
 </style>

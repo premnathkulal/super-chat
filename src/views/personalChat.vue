@@ -20,7 +20,7 @@ import firebase from "firebase";
 import { namespace } from "vuex-class";
 import { UserActions } from "@/types/types";
 import Message from "@/components/Message.vue";
-import MessageSender from "@/components/MessageSender.vue";
+import MessageSender from "@/components/MessageInput.vue";
 import DisplyMessages from "@/components/DisplyMessages.vue";
 import { ContactList } from "@/types/interface";
 

@@ -1,29 +1,19 @@
 <template>
   <div>
-    <div class="tabs-field">
-      <div class="container tab">
-        <template v-for="(item, index) in tabptions">
-          <div
-            class="tab-item"
-            :class="{ active: tab === item.title }"
-            :key="index"
-            @click="loadTab(item.title)"
-          >
-            <v-icon>{{ item.icon }}</v-icon>
-            <span class="d-none d-sm-block">{{ item.title }}</span>
-          </div>
-        </template>
-      </div>
-    </div>
-    <router-view />
+    <disply-messages />
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { tabptions } from "@/utils/uiData";
+import DisplyMessages from "@/components/DisplyMessages.vue";
 
-@Component
+@Component({
+  components: {
+    DisplyMessages,
+  },
+})
 export default class Home extends Vue {
   tab = "Contacts";
   tabptions = tabptions;

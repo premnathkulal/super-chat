@@ -15,7 +15,7 @@ export default class SocketHelper {
     this.userDetails = userDetails;
     const userDetailsJsonString = JSON.stringify(userDetails);
     console.log(userDetails);
-    // const host = `localhost:3000`;
+    // const host = `localhost:3002`;
     // this.socket = io(host).connect();
     this.socket = io().connect();
     this.socket.emit("connected", `${userDetailsJsonString}`);

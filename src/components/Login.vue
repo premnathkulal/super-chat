@@ -1,82 +1,6 @@
 <template>
   <div class="login">
-    <div class="form">
-      <v-card ref="form">
-        <v-card-text>
-          <v-text-field
-            ref="email"
-            v-model="email"
-            :rules="[
-              validateEmail(),
-              !invalidEmail || 'Invalid Email',
-              !emailExists || 'Email already exists',
-            ]"
-            label="Email"
-            placeholder="Email"
-            @keypress="
-              invalidEmail = false;
-              emailExists = false;
-            "
-          ></v-text-field>
-          <v-text-field
-            ref="password"
-            v-model="password"
-            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-            :rules="[
-              validatePassword(),
-              !invalidPassword || 'Invalid Password',
-            ]"
-            :type="show ? 'text' : 'password'"
-            label="Password"
-            hint="At least 8 characters"
-            placeholder="Password"
-            @click:append="show = !show"
-            @keypress="invalidPassword = false"
-            required
-          ></v-text-field>
-        </v-card-text>
-
-        <v-card-actions v-if="!register">
-          <v-btn
-            @click="login('emailPasswrod')"
-            block
-            color="primary"
-            elevation="2"
-            type="submit"
-            :disabled="disableButton()"
-            large
-          >
-            Login
-          </v-btn>
-        </v-card-actions>
-        <v-card-actions v-else>
-          <v-btn
-            @click="signUp()"
-            block
-            color="primary"
-            elevation="2"
-            :disabled="disableButton()"
-            large
-          >
-            Register
-          </v-btn>
-        </v-card-actions>
-        <div class="text-center py-2">
-          <h6 v-if="!register">
-            Don't have account?
-            <span class="link-text" @click="loginRegisterToggle()">
-              register here.</span
-            >
-          </h6>
-          <h6 v-else>
-            Already have account?
-            <span class="link-text" @click="loginRegisterToggle()">
-              login here.</span
-            >
-          </h6>
-        </div>
-      </v-card>
-    </div>
+    <div class="form">Login</div>
   </div>
 </template>
 
@@ -174,12 +98,12 @@ export default class Login extends Vue {
   align-items: center;
   justify-content: center;
   margin-top: 10rem;
-  @media screen and (max-width: 768px) {
+  @media only screen and (max-width: 800px) {
     margin-top: 0rem;
   }
   .form {
     width: 600px;
-    @media screen and (max-width: 768px) {
+    @media only screen and (max-width: 800px) {
       width: 100%;
     }
   }

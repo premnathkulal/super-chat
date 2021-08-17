@@ -1,67 +1,36 @@
 <template>
   <div id="app">
-    <v-app>
-      <v-app-bar app color="primary" dark>
-        <div @click="navigate('Home')" class="d-flex align-center brand">
-          <h5 v-if="homePage" class="mr-2" :style="{ cursor: 'pointer' }">
-            {{ welcomeMessage || "Welcome" }}
-          </h5>
-          <v-icon v-else>mdi-arrow-left</v-icon
-          ><strong class="ml-5">{{ this.pageName }}</strong>
-        </div>
-        <v-spacer></v-spacer>
-        <v-menu bottom left>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn dark icon v-bind="attrs" v-on="on">
-              <v-icon>mdi-dots-vertical</v-icon>
-            </v-btn>
-          </template>
-
-          <v-list>
-            <v-list-item>
-              <v-btn v-if="!user" text @click="dialog = true">
-                <span class="mr-2">Login</span>
-              </v-btn>
-              <v-btn v-else text @click="logout()">
-                <span class="mr-2">Logoutsss</span>
-              </v-btn>
-            </v-list-item>
-            <v-list-item>
-              <v-btn v-if="user" text @click="navigate('ChatApp')">
-                <v-icon>mdi-chat</v-icon>
-              </v-btn>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </v-app-bar>
-      <v-main>
-        <router-view v-if="user && isOnline" />
-        <error-pages
-          v-else
-          :pageName="!user && isOnline ? 'login' : 'noInternet'"
-          @showModal="dialog = true"
-        />
-      </v-main>
-    </v-app>
-    <v-row justify="center">
-      <v-dialog
-        v-model="dialog"
-        fullscreen
-        hide-overlay
-        transition="dialog-bottom-transition"
+    <div class="chat-window">
+      <side-bar-menu v-if="(smallDevice && openDrawer) || !smallDevice" />
+      <contacts v-if="(smallDevice && openDrawer) || !smallDevice" />
+      <div
+        v-if="(smallDevice && !openDrawer) || !smallDevice"
+        class="chat-block"
       >
-        <v-card>
-          <v-toolbar dark color="primary">
-            <v-btn icon dark @click="dialog = false">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-            <v-toolbar-title>Login</v-toolbar-title>
-            <v-spacer></v-spacer>
-          </v-toolbar>
-          <login />
-        </v-card>
-      </v-dialog>
-    </v-row>
+        <top-bar :showMenuIcon="smallDevice" @toggleDrawer="toggleDrawer()" />
+        <router-view class="router-view" />
+
+        <!-- <div class="input-area">
+          <div class="input-box">
+            <i class="fa fa-smile-o"></i>
+            <input
+              v-model="messageText"
+              type="text"
+              class="text-box"
+              placeholder="Search..."
+            />
+            <i class="fa fa-paperclip"></i>
+            <i class="fa fa-camera"></i>
+            <i v-if="!messageText" class="fa fa-paper-plane"></i>
+          </div>
+          <div class="mic-icon">
+            <i v-if="!messageText" class="fa fa-microphone fa-icon"></i>
+            <i v-if="messageText" class="fa fa-paper-plane fa-icon"></i>
+          </div>
+        </div> -->
+        <message-input />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -71,6 +40,10 @@ import { namespace } from "vuex-class";
 import firebase from "firebase";
 import Login from "@/components/Login.vue";
 import ErrorPages from "@/components/ErrorPages.vue";
+import SideBarMenu from "@/components/SideBarMenu.vue";
+import Contacts from "@/components/Contacts.vue";
+import TopBar from "@/components/TopBar.vue";
+import MessageInput from "@/components/MessageInput.vue";
 import router from "./router";
 import { ContactActions, SocketActions, UserActions } from "@/types/types";
 
@@ -82,6 +55,10 @@ const socket = namespace("Socket");
   components: {
     Login,
     ErrorPages,
+    SideBarMenu,
+    Contacts,
+    TopBar,
+    MessageInput,
   },
 })
 export default class ChatApp extends Vue {
@@ -90,6 +67,9 @@ export default class ChatApp extends Vue {
   isOnline = false;
   homePage = true;
   pageName = "";
+  smallDevice = false;
+  openDrawer = false;
+  messageText = "";
 
   @socket.Getter("getWelcomeMessage")
   public welcomeMessage!: string;
@@ -129,6 +109,14 @@ export default class ChatApp extends Vue {
     }
   }
 
+  @Watch("window.innerWidth")
+  changedWidth(): void {
+    this.smallDevice = false;
+    if (window.innerWidth <= 800) {
+      this.smallDevice = true;
+    }
+  }
+
   navigate(name: string): void {
     if (this.user) {
       if (name === "Home" && router.currentRoute.name !== "Contacts") {
@@ -139,6 +127,10 @@ export default class ChatApp extends Vue {
         router.push({ name });
       }
     }
+  }
+
+  toggleDrawer(): void {
+    this.openDrawer = !this.openDrawer;
   }
 
   logout(): void {
@@ -155,14 +147,27 @@ export default class ChatApp extends Vue {
       };
       this.connectToWsServer(userDetails);
     }
+    this.changedWidth();
+    window.addEventListener("resize", this.changedWidth);
   }
 }
 </script>
 
 <style lang="scss">
 #app {
-  .brand {
-    text-transform: capitalize;
+  .chat-window {
+    display: flex;
+    flex-direction: row;
+    .chat-block {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      .router-view {
+        flex: 1;
+        overflow-y: scroll;
+      }
+    }
   }
 }
 </style>
