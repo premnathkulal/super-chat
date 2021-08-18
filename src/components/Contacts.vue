@@ -77,6 +77,7 @@ export default class Contacts extends Vue {}
   .contact-list {
     display: flex;
     flex-direction: column;
+    justify-content: center;
 
     .contact-info {
       margin-top: 0.5rem;
@@ -84,8 +85,8 @@ export default class Contacts extends Vue {}
       padding: 0.5rem;
 
       .profile-pic {
-        width: 2.8rem;
-        height: 2.8rem;
+        width: 2.5rem;
+        height: 2.5rem;
         background: black;
         border-radius: 50%;
       }

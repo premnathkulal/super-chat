@@ -1,10 +1,11 @@
 <template>
-  <div class="display-message">
+  <div class="display-message" ref="scrollToMe">
     <div
       v-for="(msg, index) in personal[0].messages"
       :key="index"
       :class="'navin123' === msg.from ? 'my-message' : ''"
       class="message"
+      @up="prems()"
     >
       <div class="user-pic" v-if="!(index + 1 === personal[0].messages.length)">
         <div
@@ -36,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import firebase from "firebase";
 import { namespace } from "vuex-class";
 import { UserActions } from "@/types/types";
@@ -281,14 +282,15 @@ export default class DisplyMessages extends Vue {
     },
   ];
 
-  prem(): void {
-    this.personal[0].messages.push({
+  async prem(): Promise<void> {
+    await this.personal[0].messages.push({
       from: "navin123",
       top: "pramod456",
       time: "Tue Aug 17 2021 17:37:51",
       message:
-        "lets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets start",
+        "😆😆 lets startlets startlets startlets startlets 😆😆 startlets startlets startlets startlets 😎😎😎 startlets startlets startlets startlets startlets startlets 😎😎😎 startlets startlets startlets startlets startlets startlets startlets 😎😎😎😎😎😎😎😎😎 startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets start 😎😎😎😎😎😎",
     });
+    this.windowScroll();
   }
 
   @Prop({ default: "" }) messageId!: string;
@@ -358,6 +360,20 @@ export default class DisplyMessages extends Vue {
         }
         this.imageLoading = false;
       });
+  }
+
+  windowScroll(): void {
+    const element: any = this.$refs.scrollToMe;
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
+  }
+
+  mounted(): void {
+    this.windowScroll();
   }
 
   created(): void {

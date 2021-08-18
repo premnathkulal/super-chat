@@ -38,6 +38,8 @@ export default class TopBar extends Vue {
   .top-bar-contents {
     display: flex;
     flex-direction: row;
+    align-items: center;
+    justify-content: center;
 
     .top-bar-content {
       color: white;
@@ -67,8 +69,8 @@ export default class TopBar extends Vue {
       }
     }
     .user-image {
-      width: 2.8rem;
-      height: 2.8rem;
+      width: 2.5rem;
+      height: 2.5rem;
       background: white;
       border-radius: 50%;
       display: flex;
