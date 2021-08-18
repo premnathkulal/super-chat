@@ -6,7 +6,7 @@
         class="top-bar-content menu-bar"
         @click="$emit('toggleDrawer')"
       >
-        <i class="fa fa-bars"></i>
+        <i class="fa fa-chevron-left"></i>
       </div>
       <div class="top-bar-content user-image">P</div>
       <div class="top-bar-content user-info">
@@ -14,15 +14,17 @@
         <div class="typing-status">Typing...</div>
       </div>
     </div>
+    <i v-if="tabType === 'group'" class="fa fa-info-circle"></i>
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 
 @Component
 export default class TopBar extends Vue {
   @Prop({ default: false }) showMenuIcon!: boolean;
+  @Prop({ default: "all" }) tabType!: string;
 }
 </script>
 
@@ -78,6 +80,14 @@ export default class TopBar extends Vue {
       justify-content: center;
       text-align: center;
     }
+  }
+
+  .fa {
+    margin-left: auto;
+    margin-right: 1rem;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
   }
 }
 </style>

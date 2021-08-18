@@ -1,16 +1,19 @@
 <template>
   <div class="sidebar-menu">
     <div class="menu-options">
-      <div class="options personal-chat">
+      <div
+        @click="$emit('selectTabType', 'personal')"
+        class="options personal-chat"
+      >
         <i class="fa fa-comments"></i>
       </div>
-      <div class="options group-chat">
+      <div @click="$emit('selectTabType', 'group')" class="options group-chat">
         <i class="fa fa-users"></i>
       </div>
       <div class="options profile">
-        <i class="fa fa-user"></i>
+        <i @click="$emit('selectTabType', 'Profile')" class="fa fa-user"></i>
       </div>
-      <div class="options add-btn">
+      <div @click="$emit('selectTabType', 'Create')" class="options add-btn">
         <i class="fa fa-plus-circle"></i>
       </div>
       <div v-if="lightTheme" @click="toggleTheme()" class="options theme-icon">
@@ -32,6 +35,7 @@ export default class SideBarMenu extends Vue {
 
   toggleTheme(): void {
     this.lightTheme = !this.lightTheme;
+    this.$emit("selectTabType", "theme-change");
   }
 }
 </script>
@@ -44,6 +48,7 @@ export default class SideBarMenu extends Vue {
   height: 100vh;
   top: 0;
   left: 0;
+
   .menu-options {
     display: flex;
     height: 100%;

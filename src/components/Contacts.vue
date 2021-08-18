@@ -7,25 +7,37 @@
       </div>
     </div>
     <div class="contact-list">
-      <div class="contact-info">
+      <div
+        v-if="tabType === 'all' || tabType === 'personal'"
+        class="contact-info"
+        @click="$emit('loadMessage')"
+      >
         <div class="profile-pic"></div>
         <div class="contact-details">
-          <div class="name">Navin: Good Evening</div>
+          <div class="name">Pramod</div>
           <div class="msg-status">Pramod: Cool</div>
         </div>
       </div>
-      <div class="contact-info">
+      <div
+        v-if="tabType === 'all' || tabType === 'personal'"
+        class="contact-info"
+        @click="$emit('loadMessage')"
+      >
         <div class="profile-pic"></div>
         <div class="contact-details">
           <div class="name">Navin</div>
           <div class="msg-status">Navin: Good Evening</div>
         </div>
       </div>
-      <div class="contact-info">
+      <div
+        v-if="tabType === 'all' || tabType === 'group'"
+        class="contact-info"
+        @click="$emit('loadMessage')"
+      >
         <div class="profile-pic"></div>
         <div class="contact-details">
           <div class="name">Week End Party</div>
-          <div class="msg-status">vidya: Nothing!!!</div>
+          <div class="msg-status">Vidya: Nothing!!!</div>
         </div>
       </div>
     </div>
@@ -36,7 +48,9 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
-export default class Contacts extends Vue {}
+export default class Contacts extends Vue {
+  @Prop({ default: "all" }) tabType!: string;
+}
 </script>
 
 <style lang="scss">

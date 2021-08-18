@@ -13,16 +13,17 @@ const routes: Array<RouteConfig> = [
     name: "Home",
     component: Home,
   },
-
   {
-    path: "/chat/:id?",
-    name: "PersonalChat",
-    component: PersonalChat,
+    path: "/profile",
+    name: "Profile",
+    component: () =>
+      import(/* webpackChunkName: 'Profile' */ "@/views/Profile.vue"),
   },
   {
-    path: "/poolChat",
-    name: "ChatApp",
-    component: ChatApp,
+    path: "/create",
+    name: "Create",
+    component: () =>
+      import(/* webpackChunkName: 'Profile' */ "@/views/CreateRoom.vue"),
   },
 ];
 

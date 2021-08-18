@@ -1,35 +1,29 @@
 <template>
   <div id="app">
     <div class="chat-window">
-      <side-bar-menu v-if="(smallDevice && openDrawer) || !smallDevice" />
-      <contacts v-if="(smallDevice && openDrawer) || !smallDevice" />
+      <side-bar-menu
+        v-if="(smallDevice && openDrawer) || !smallDevice || !homePage"
+        @selectTabType="selectTabType"
+      />
+      <contacts
+        v-if="((smallDevice && openDrawer) || !smallDevice) && homePage"
+        :tabType="chatTabType"
+        @loadMessage="loadMessage()"
+      />
       <div
         v-if="(smallDevice && !openDrawer) || !smallDevice"
         class="chat-block"
       >
-        <top-bar :showMenuIcon="smallDevice" @toggleDrawer="toggleDrawer()" />
+        <top-bar
+          v-if="homePage"
+          :tabType="tabType"
+          :showMenuIcon="smallDevice"
+          @toggleDrawer="toggleDrawer()"
+        />
         <router-view class="router-view" />
-
-        <!-- <div class="input-area">
-          <div class="input-box">
-            <i class="fa fa-smile-o"></i>
-            <input
-              v-model="messageText"
-              type="text"
-              class="text-box"
-              placeholder="Search..."
-            />
-            <i class="fa fa-paperclip"></i>
-            <i class="fa fa-camera"></i>
-            <i v-if="!messageText" class="fa fa-paper-plane"></i>
-          </div>
-          <div class="mic-icon">
-            <i v-if="!messageText" class="fa fa-microphone fa-icon"></i>
-            <i v-if="messageText" class="fa fa-paper-plane fa-icon"></i>
-          </div>
-        </div> -->
-        <message-input />
+        <message-input v-if="homePage" />
       </div>
+      <router-view v-else-if="!homePage" class="router-view" />
     </div>
   </div>
 </template>
@@ -68,8 +62,10 @@ export default class ChatApp extends Vue {
   homePage = true;
   pageName = "";
   smallDevice = false;
-  openDrawer = false;
+  openDrawer = true;
   messageText = "";
+  chatTabType = "all";
+  tabType = "all";
 
   @socket.Getter("getWelcomeMessage")
   public welcomeMessage!: string;
@@ -88,27 +84,6 @@ export default class ChatApp extends Vue {
   @socket.Action(SocketActions.CONNECTION)
   public connectToWsServer!: (userDetails: { email: string }) => void;
 
-  async setUserInfo(): Promise<void> {
-    this.isOnline = window.navigator.onLine;
-    if (this.user) {
-      await this.setUserId(this.user.uid);
-      await this.setUserIdemail({ email: this.user.email, uid: this.user.uid });
-      await this.loadContacts();
-    }
-  }
-
-  @Watch("$route.name")
-  setTopBar(): void {
-    type routeNames = Array<string | null | undefined>;
-    const routeName: routeNames = ["Profile", "Group", "PersonalChat"];
-    this.homePage = true;
-    this.pageName = "";
-    if (routeName.includes(this.$route.name)) {
-      this.homePage = false;
-      this.pageName = this.$route.name as string;
-    }
-  }
-
   @Watch("window.innerWidth")
   changedWidth(): void {
     this.smallDevice = false;
@@ -117,15 +92,12 @@ export default class ChatApp extends Vue {
     }
   }
 
-  navigate(name: string): void {
-    if (this.user) {
-      if (name === "Home" && router.currentRoute.name !== "Contacts") {
-        router.push({ name: "Contacts" });
-        return;
-      }
-      if (router.currentRoute.name !== name) {
-        router.push({ name });
-      }
+  @Watch("$route.name")
+  setTopBar(): void {
+    this.homePage = false;
+    this.pageName = this.$route.name || "";
+    if (this.pageName === "Home") {
+      this.homePage = true;
     }
   }
 
@@ -138,15 +110,33 @@ export default class ChatApp extends Vue {
     this.user = null;
   }
 
-  created(): void {
-    this.setUserInfo();
-    this.setTopBar();
-    if (this.user) {
-      const userDetails = {
-        email: this.user.email,
-      };
-      this.connectToWsServer(userDetails);
+  loadMessage(): void {
+    this.openDrawer = false;
+  }
+
+  selectTabType(tabType: string): void {
+    this.pageName = this.$route.name || "";
+    this.tabType = tabType;
+    if (tabType === "personal" || tabType === "group") {
+      if (this.pageName !== "Home") {
+        router.push({ name: "Home" });
+      }
+      this.chatTabType = tabType;
+      return;
     }
+    if (this.pageName !== tabType) {
+      router.push({ name: tabType });
+      return;
+    }
+  }
+
+  created(): void {
+    // if (this.user) {
+    //   const userDetails = {
+    //     email: this.user.email,
+    //   };
+    //   this.connectToWsServer(userDetails);
+    // }
     this.changedWidth();
     window.addEventListener("resize", this.changedWidth);
   }
@@ -168,6 +158,9 @@ export default class ChatApp extends Vue {
         overflow-y: scroll;
       }
     }
+  }
+  .router-view {
+    width: 100%;
   }
 }
 </style>

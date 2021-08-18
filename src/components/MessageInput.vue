@@ -87,14 +87,6 @@ export default class MessageInput extends Vue {
 </script>
 
 <style lang="scss">
-// .input-div {
-//   position: fixed;
-//   bottom: 0;
-//   left: 0;
-//   width: 100%;
-//   background: white;
-// }
-
 .input-area {
   padding: 1rem;
   display: flex;
@@ -149,7 +141,7 @@ export default class MessageInput extends Vue {
   transition: 0.2s;
   #Emojis {
     .container-emoji {
-      height: 8rem;
+      height: 10rem;
     }
   }
 }

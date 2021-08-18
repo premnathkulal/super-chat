@@ -27,12 +27,11 @@
         />
       </div>
       <div class="message-contents">
-        <div class="user-name">{{ msg.from }}</div>
+        <!-- <div class="user-name">{{ msg.from }}</div> -->
         <div class="message">{{ msg.message }}</div>
         <div class="time">{{ "10:00AM" }}</div>
       </div>
     </div>
-    <div @click="prem()">prem</div>
   </div>
 </template>
 
@@ -60,7 +59,6 @@ export default class DisplyMessages extends Vue {
   allMessages: Message[] = [];
   reciverPic = "";
   senderPic = "";
-  colorList = ["#a1f5c17c", "#cba9f37c", "#f7adf77c", "#e7a7817c", "#b5eeba7c"];
   imageLoading = false;
   personal = [
     {
@@ -267,10 +265,10 @@ export default class DisplyMessages extends Vue {
           message: "From tomorrow I'll join you",
         },
         {
-          from: "navin123",
-          top: "pramod456",
+          from: "pramod456",
+          top: "navin123",
           time: "Tue Aug 17 2021 17:37:51",
-          message: "End of the chat",
+          message: "Okay bye",
         },
         {
           from: "navin123",
@@ -281,17 +279,6 @@ export default class DisplyMessages extends Vue {
       ],
     },
   ];
-
-  async prem(): Promise<void> {
-    await this.personal[0].messages.push({
-      from: "navin123",
-      top: "pramod456",
-      time: "Tue Aug 17 2021 17:37:51",
-      message:
-        "😆😆 lets startlets startlets startlets startlets 😆😆 startlets startlets startlets startlets 😎😎😎 startlets startlets startlets startlets startlets startlets 😎😎😎 startlets startlets startlets startlets startlets startlets startlets 😎😎😎😎😎😎😎😎😎 startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets startlets start 😎😎😎😎😎😎",
-    });
-    this.windowScroll();
-  }
 
   @Prop({ default: "" }) messageId!: string;
   @Prop({ default: "" }) reciverEmail!: string;
@@ -304,10 +291,6 @@ export default class DisplyMessages extends Vue {
 
   sentOrReceived(userUID: string): string {
     return userUID === this.user?.uid ? "sent" : "received";
-  }
-
-  getColor(num: number): string {
-    return this.colorList[num % 5];
   }
 
   getDate(timestamp: number): string {
