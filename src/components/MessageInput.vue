@@ -10,8 +10,9 @@
     <div class="input-area">
       <div class="input-box">
         <i class="fa fa-smile-o" @click="showEmojies = !showEmojies"></i>
-        <input
+        <textarea
           v-model="message"
+          rows="1"
           type="text"
           class="text-box"
           placeholder="Search..."

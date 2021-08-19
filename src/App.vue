@@ -124,7 +124,7 @@ export default class ChatApp extends Vue {
       this.chatTabType = tabType;
       return;
     }
-    if (this.pageName !== tabType) {
+    if (this.pageName !== tabType && tabType !== "theme-change") {
       router.push({ name: tabType });
       return;
     }

@@ -1,21 +1,21 @@
 <template>
-  <div class="message">
-    <div>
-      <a
-        :href="previews[0].href"
-        target="_blank"
-        v-if="previews"
-        class="preview-link mb-2"
-      >
-        <img
-          :src="favicon || 'http://localhost:8080/favicon.ico'"
-          class="link-image"
-          alt="fevicon"
-        />
-        <p class="link-text pl-2">{{ previews[0].href.slice(0, 50) }}</p>
-      </a>
-      <p ref="chatMessage" class="chat-message"></p>
-    </div>
+  <div class="message-text">
+    <a
+      :href="linkPreviews[0].href"
+      target="_blank"
+      v-if="linkPreviews"
+      class="preview-link mb-2"
+    >
+      <img
+        :src="favicon || 'http://localhost:8080/favicon.ico'"
+        class="link-image"
+        alt="fevicon"
+      />
+      <p class="link-text">
+        {{ urlPageTitle }}
+      </p>
+    </a>
+    <p ref="chatMessage" class="chat-message"></p>
   </div>
 </template>
 
@@ -28,8 +28,9 @@ import { Preview } from "@/types/interface";
 @Component
 export default class Message extends Vue {
   @Prop({ required: true }) message!: string;
-  previews: Preview[] | undefined;
+  linkPreviews: Preview[] | undefined;
   parsedMessage!: string;
+  urlPageTitle = "";
 
   mounted(): void {
     this.parsedMessage = linkifyStr(this.message, {
@@ -41,20 +42,15 @@ export default class Message extends Vue {
   }
 
   get favicon(): string {
-    const link = this.previews ? this.previews[0].href : undefined;
-    let iconURL = `http://${link?.split("/")[2].split("?")[0]}/favicon.ico`;
-    // try {
-    //   //  fetch(iconURL);
-    // } catch (e) {
-    //   iconURL =
-    //     "https://cdn0.iconfinder.com/data/icons/document-file-types/512/url-512.png";
-    // }
+    const link = this.linkPreviews ? this.linkPreviews[0].href : undefined;
+    let iconURL = `https://www.google.com/s2/favicons?sz=256&domain=${link}`;
+    this.urlPageTitle = `${link}`;
     return iconURL;
   }
 
   created(): void {
     const links = linkify.find(this.message);
-    this.previews = links.length > 0 ? links : undefined;
+    this.linkPreviews = links.length > 0 ? links : undefined;
   }
 }
 </script>
@@ -63,20 +59,33 @@ export default class Message extends Vue {
 * {
   margin: 0 !important;
 }
-.message {
+.message-text {
   max-width: 20rem;
+  word-break: break-all;
+
+  a {
+    text-decoration: none;
+  }
   .preview-link {
-    max-width: 20rem;
-    max-height: 8rem;
-    overflow: hidden;
+    max-width: 18rem;
     display: flex;
-    background: #ffffff65;
+    background: #bb96ffd0;
     justify-content: flex-start;
+    padding: 0.5rem;
 
     .link-image {
       border-radius: 0;
-      width: 4rem;
+      width: 20%;
+      height: 10%;
+    }
+    .link-text {
+      padding-left: 1rem;
+      color: black;
+      font-weight: bold;
     }
   }
+  // .chatMessage {
+  //   text-decoration: none !important;
+  // }
 }
 </style>

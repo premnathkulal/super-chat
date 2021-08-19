@@ -7,10 +7,10 @@
       class="message"
       @up="prems()"
     >
-      <div class="user-pic" v-if="!(index + 1 === personal[0].messages.length)">
+      <div class="user-pic" v-if="index < personal[0].messages.length">
         <div
           v-if="
-            index + 1 !== personal[0].messages.length &&
+            index + 1 === personal[0].messages.length ||
             msg.from !== personal[0].messages[index + 1].from
           "
         >
@@ -20,15 +20,10 @@
           />
         </div>
       </div>
-      <div v-if="index + 1 === personal[0].messages.length" class="user-pic">
-        <img
-          class="img"
-          :src="`https://avatars.dicebear.com/api/avataaars/${msg.from}.svg`"
-        />
-      </div>
       <div class="message-contents">
         <!-- <div class="user-name">{{ msg.from }}</div> -->
-        <div class="message">{{ msg.message }}</div>
+        <!-- <div class="message">{{ msg.message }}</div> -->
+        <message :message="msg.message" />
         <div class="time">{{ "10:00AM" }}</div>
       </div>
     </div>
@@ -238,43 +233,45 @@ export default class DisplyMessages extends Vue {
           from: "pramod456",
           top: "navin123",
           time: "Tue Aug 17 2021 17:37:51",
+          message: "https://upstox.com/",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "https://twitter.com/youyuxi",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
+          message: "https://www.whatsapp.com",
+        },
+        {
+          from: "navin123",
+          top: "pramod456",
+          time: "Tue Aug 17 2021 17:37:51",
+          message:
+            "https://v3.vuejs.org/guide/composition-api-introduction.html#standalone-computed-properties",
+        },
+        {
+          from: "pramod456",
+          top: "navin123",
+          time: "Tue Aug 17 2021 17:37:51",
           message: "From tomorrow I'll join you",
         },
         {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "Yeah, sure Pramod",
-        },
-        {
           from: "pramod456",
           top: "navin123",
           time: "Tue Aug 17 2021 17:37:51",
-          message: "I saw u near the park today morning",
+          message: "https://www.facebook.com/ Please like share and subscribe",
         },
         {
           from: "navin123",
           top: "pramod456",
           time: "Tue Aug 17 2021 17:37:51",
-          message: "Oh I just went for quick walk",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "From tomorrow I'll join you",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "Okay bye",
-        },
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "End of the chat",
+          message:
+            "https://www.youtube.com/watch?v=6GA6X8XHE14 Please like share and subscribe",
         },
       ],
     },
@@ -379,7 +376,7 @@ export default class DisplyMessages extends Vue {
       background: #6e4ead;
       color: white;
       border-radius: 0.3rem;
-      max-width: 15rem;
+      max-width: 18rem;
 
       .user-name {
         font-weight: bold;
