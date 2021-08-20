@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { tabptions } from "@/utils/uiData";
 import DisplyMessages from "@/components/DisplyMessages.vue";
 
 @Component({
@@ -14,17 +13,7 @@ import DisplyMessages from "@/components/DisplyMessages.vue";
     DisplyMessages,
   },
 })
-export default class Home extends Vue {
-  tab = "Contacts";
-  tabptions = tabptions;
-
-  loadTab(name: string): void {
-    this.tab = name;
-    if (this.$router.currentRoute.name !== name) {
-      this.$router.push({ name });
-    }
-  }
-}
+export default class Home extends Vue {}
 </script>
 
 <style lang="scss" scoped>

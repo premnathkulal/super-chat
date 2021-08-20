@@ -84,8 +84,5 @@ export default class Message extends Vue {
       font-weight: bold;
     }
   }
-  // .chatMessage {
-  //   text-decoration: none !important;
-  // }
 }
 </style>

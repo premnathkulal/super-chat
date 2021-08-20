@@ -50,7 +50,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { VEmojiPicker } from "v-emoji-picker";
-import { Emoji } from "v-emoji-picker/lib/models/Emoji";
+// import { Emoji } from "v-emoji-picker/lib/models/Emoji";
 
 @Component({
   components: {
@@ -61,9 +61,9 @@ export default class CreateRoom extends Vue {
   showEmojies = false;
   createGroupTab = false;
 
-  selectEmoji(emoji: Emoji): void {
-    //
-  }
+  // selectEmoji(emoji: Emoji): void {
+  //   //
+  // }
 }
 </script>
 
@@ -74,7 +74,7 @@ export default class CreateRoom extends Vue {
   align-items: center;
   padding: 8% 0;
   overflow-y: scroll;
-  height: 100vh;
+  height: 70vh;
 
   .create {
     display: flex;
@@ -96,14 +96,14 @@ export default class CreateRoom extends Vue {
       .button {
         flex: 1;
         padding: 0.8rem;
-        background: #30224b;
+        background: #9874df;
         color: white;
         font-weight: bold;
         font-size: 1rem;
         text-align: center;
       }
       .active {
-        background: #9874df;
+        background: #30224b;
       }
     }
 
@@ -124,7 +124,8 @@ export default class CreateRoom extends Vue {
           flex: 1;
           align-items: center;
           background: white;
-          padding: 0.4rem 0.5rem;
+          padding: 0.8rem;
+          height: 1rem;
           box-shadow: 0px 0px 0px rgb(153, 149, 149);
           border-radius: 0%;
 
@@ -139,8 +140,7 @@ export default class CreateRoom extends Vue {
           .fa {
             cursor: pointer;
             font-weight: bold;
-            padding: 0 0.3rem;
-            font-size: 1.2rem;
+            margin: 0;
           }
           .fa-smile-o {
             padding-right: 0.5rem;

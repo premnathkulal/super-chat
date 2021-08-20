@@ -1,6 +1,5 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
 import { UserActions, UserMutations } from "@/types/types";
-import { updateProfilePic, getProfilePic } from "@/utils/api";
 
 @Module({ namespaced: true })
 class User extends VuexModule {
@@ -18,20 +17,15 @@ class User extends VuexModule {
     this.picUrl = picUrl;
   }
 
-  @Action
-  [UserActions.GET_USER_PIC](email: string): void {
-    getProfilePic(email.split("@")[0]).then((res) => {
-      this.context.commit(
-        UserMutations.GET_USER_PIC,
-        res.data?.downloadUrl || ""
-      );
-    });
-  }
+  // @Action
+  // [UserActions.GET_USER_PIC](email: string): void {
+  //   //
+  // }
 
-  @Mutation
-  public [UserMutations.SET_USER_PIC](downloadUrl: string): void {
-    updateProfilePic({ downloadUrl }, this.uidEmail.email.split("@")[0]);
-  }
+  // @Mutation
+  // public [UserMutations.SET_USER_PIC](downloadUrl: string): void {
+  //   //
+  // }
 
   @Action
   [UserActions.SET_USER_PIC](downloadUrl: string): void {

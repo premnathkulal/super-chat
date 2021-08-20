@@ -33,7 +33,6 @@
 import { VEmojiPicker } from "v-emoji-picker";
 import { Emoji } from "v-emoji-picker/lib/models/Emoji";
 import { Vue, Component, Prop } from "vue-property-decorator";
-import firebase from "firebase";
 import { namespace } from "vuex-class";
 import { SocketActions } from "@/types/types";
 
@@ -45,8 +44,6 @@ const socket = namespace("Socket");
   },
 })
 export default class MessageInput extends Vue {
-  user = firebase.auth().currentUser;
-  db = firebase.firestore();
   showEmojies = false;
   message = "";
 
@@ -55,17 +52,13 @@ export default class MessageInput extends Vue {
   @socket.Action(SocketActions.STARTED_TYPING)
   public userTyping!: (email: string) => void;
 
+  messageTyping(): void {
+    //
+  }
+
   async sendMessage(): Promise<void> {
     if (this.message) {
-      const messageInfo = {
-        email: this.user?.email,
-        userUID: this.user?.uid,
-        displayName: this.user?.displayName,
-        photoURL: this.user?.photoURL,
-        text: this.message,
-        createdAt: Date.now(),
-      };
-      await this.db.collection(this.messageId).add(messageInfo);
+      //
       this.message = "";
       this.showEmojies = false;
     }
@@ -73,12 +66,6 @@ export default class MessageInput extends Vue {
 
   selectEmoji(emoji: Emoji): void {
     this.message = this.message + emoji.data;
-  }
-
-  messageTyping(): void {
-    if (this.user) {
-      this.userTyping(this.user.email as string);
-    }
   }
 
   created(): void {

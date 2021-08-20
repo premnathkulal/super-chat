@@ -22,7 +22,6 @@
       </div>
       <div class="message-contents">
         <!-- <div class="user-name">{{ msg.from }}</div> -->
-        <!-- <div class="message">{{ msg.message }}</div> -->
         <message :message="msg.message" />
         <div class="time">{{ "10:00AM" }}</div>
       </div>
@@ -31,30 +30,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import firebase from "firebase";
-import { namespace } from "vuex-class";
-import { UserActions } from "@/types/types";
+import { Component, Vue } from "vue-property-decorator";
 import Message from "@/components/Message.vue";
-import MessageSender from "@/components/MessageInput.vue";
-import { ContactList } from "@/types/interface";
-
-const contact = namespace("Contacts");
-const user = namespace("User");
 
 @Component({
   components: {
     Message,
-    MessageSender,
   },
 })
 export default class DisplyMessages extends Vue {
-  user = firebase.auth().currentUser;
-  db = firebase.firestore();
-  allMessages: Message[] = [];
-  reciverPic = "";
-  senderPic = "";
-  imageLoading = false;
   personal = [
     {
       id: "messageID_1",
@@ -277,73 +261,8 @@ export default class DisplyMessages extends Vue {
     },
   ];
 
-  @Prop({ default: "" }) messageId!: string;
-  @Prop({ default: "" }) reciverEmail!: string;
-
-  @contact.Getter("loadContacts")
-  public contactList!: ContactList[];
-
-  @user.Action(UserActions.GET_USER_PIC)
-  public getProfilePic!: (email: string) => Promise<string>;
-
-  sentOrReceived(userUID: string): string {
-    return userUID === this.user?.uid ? "sent" : "received";
-  }
-
-  getDate(timestamp: number): string {
-    return new Date(timestamp).toString().slice(4, 15);
-  }
-
-  getTime(timestamp: number): string {
-    return new Date(timestamp).toString().slice(15, 21);
-  }
-
-  // getMessages(): void {
-  //   setTimeout(() => {
-  //     if (this.user) {
-  //       this.db
-  //         .collection(this.messageId)
-  //         .orderBy("createdAt")
-  //         .onSnapshot((querySnap) => {
-  //           this.allMessages = querySnap.docs.map((doc) =>
-  //             doc.data()
-  //           ) as Message[];
-  //           this.$nextTick(function () {
-  //             const chatMessages: any =
-  //               // document.querySelector(".display-message");
-  //               this.$emit("scrollPage");
-  //             // chatMessages.scrollTop = chatMessages.scrollHeight;
-  //           });
-  //         });
-  //       this.getDownloadUrl(this.user.email as string, "sender");
-  //       this.getDownloadUrl(this.reciverEmail as string, "reciver");
-  //     }
-  //   }, 1000);
-  // }
-
-  getDownloadUrl(userEmail: string, userType: string): void {
-    this.imageLoading = true;
-    this.getProfilePic(userEmail)
-      .then((res: string) => {
-        if (userType === "sender") {
-          this.reciverPic = res;
-        } else {
-          this.senderPic = res;
-        }
-        this.imageLoading = false;
-      })
-      .catch(() => {
-        if (userType === "sender") {
-          this.senderPic = "/assets/user.png";
-        } else {
-          this.reciverPic = "/assets/user.png";
-        }
-        this.imageLoading = false;
-      });
-  }
-
   windowScroll(): void {
-    const element: any = this.$refs.scrollToMe;
+    const element = this.$refs.scrollToMe as HTMLElement;
     if (element) {
       element.scrollIntoView({
         behavior: "smooth",
@@ -406,7 +325,7 @@ export default class DisplyMessages extends Vue {
     .message-contents {
       margin-top: 0.5rem;
       padding: 0.4rem;
-      background: #d8ceec;
+      background: #6e4ead4d;
       color: rgb(53, 51, 51);
       border-radius: 0.3rem;
       order: 1;

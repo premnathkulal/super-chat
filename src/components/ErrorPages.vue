@@ -1,5 +1,5 @@
 <template>
-  <div class="container error-page">
+  <div class="error-page">
     <div v-if="pageName === 'login'" class="login-request">
       <lottie-player
         autoplay

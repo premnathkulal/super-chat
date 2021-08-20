@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component } from "vue-property-decorator";
 
 @Component
 export default class SideBarMenu extends Vue {
@@ -53,12 +53,14 @@ export default class SideBarMenu extends Vue {
     display: flex;
     height: 100%;
     flex-direction: column;
-    padding-top: 1rem;
+
     font-size: 1.5rem;
     .options {
       padding: 1rem;
+      padding-top: 2rem;
       color: white;
       text-align: center;
+
       &:hover {
         cursor: pointer;
         opacity: 0.5;

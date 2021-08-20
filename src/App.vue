@@ -2,7 +2,10 @@
   <div id="app">
     <div class="chat-window">
       <side-bar-menu
-        v-if="(smallDevice && openDrawer) || !smallDevice || !homePage"
+        v-if="
+          ((smallDevice && openDrawer) || !smallDevice || !homePage) &&
+          pageName !== 'Auth'
+        "
         @selectTabType="selectTabType"
       />
       <contacts
@@ -30,24 +33,15 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import { namespace } from "vuex-class";
-import firebase from "firebase";
-import Login from "@/components/Login.vue";
 import ErrorPages from "@/components/ErrorPages.vue";
 import SideBarMenu from "@/components/SideBarMenu.vue";
 import Contacts from "@/components/Contacts.vue";
 import TopBar from "@/components/TopBar.vue";
 import MessageInput from "@/components/MessageInput.vue";
 import router from "./router";
-import { ContactActions, SocketActions, UserActions } from "@/types/types";
-
-const contact = namespace("Contacts");
-const user = namespace("User");
-const socket = namespace("Socket");
 
 @Component({
   components: {
-    Login,
     ErrorPages,
     SideBarMenu,
     Contacts,
@@ -56,8 +50,6 @@ const socket = namespace("Socket");
   },
 })
 export default class ChatApp extends Vue {
-  dialog = false;
-  user: any = firebase.auth().currentUser;
   isOnline = false;
   homePage = true;
   pageName = "";
@@ -66,23 +58,6 @@ export default class ChatApp extends Vue {
   messageText = "";
   chatTabType = "all";
   tabType = "all";
-
-  @socket.Getter("getWelcomeMessage")
-  public welcomeMessage!: string;
-
-  @user.Action(UserActions.SET_USER_ID_EMAIL)
-  public setUserIdemail!: (
-    userIdEmail: { email: string | null; uid: string } | null
-  ) => void;
-
-  @contact.Action(ContactActions.SET_USER_ID)
-  public setUserId!: (userId: string | null) => void;
-
-  @contact.Action(ContactActions.LOAD_CONTACTS)
-  public loadContacts!: () => void;
-
-  @socket.Action(SocketActions.CONNECTION)
-  public connectToWsServer!: (userDetails: { email: string }) => void;
 
   @Watch("window.innerWidth")
   changedWidth(): void {
@@ -106,8 +81,7 @@ export default class ChatApp extends Vue {
   }
 
   logout(): void {
-    firebase.auth().signOut();
-    this.user = null;
+    //
   }
 
   loadMessage(): void {
@@ -131,12 +105,6 @@ export default class ChatApp extends Vue {
   }
 
   created(): void {
-    // if (this.user) {
-    //   const userDetails = {
-    //     email: this.user.email,
-    //   };
-    //   this.connectToWsServer(userDetails);
-    // }
     this.changedWidth();
     window.addEventListener("resize", this.changedWidth);
   }
@@ -144,6 +112,10 @@ export default class ChatApp extends Vue {
 </script>
 
 <style lang="scss">
+* {
+  padding: 0;
+  margin: 0;
+}
 #app {
   .chat-window {
     display: flex;

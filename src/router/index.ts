@@ -1,9 +1,6 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-import ChatApp from "../views/ChatApp.vue";
 import Home from "../views/Home.vue";
-import PersonalChat from "../views/personalChat.vue";
-// import Profile from "../views/Profile.vue";
 
 Vue.use(VueRouter);
 
@@ -24,6 +21,12 @@ const routes: Array<RouteConfig> = [
     name: "Create",
     component: () =>
       import(/* webpackChunkName: 'Profile' */ "@/views/CreateRoom.vue"),
+  },
+  {
+    path: "/auth",
+    name: "Auth",
+    component: () =>
+      import(/* webpackChunkName: 'Profile' */ "@/views/Login.vue"),
   },
 ];
 
