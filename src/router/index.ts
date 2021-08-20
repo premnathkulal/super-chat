@@ -26,12 +26,12 @@ const routes: Array<RouteConfig> = [
     path: "/auth",
     name: "Auth",
     component: () =>
-      import(/* webpackChunkName: 'Profile' */ "@/views/Login.vue"),
+      import(/* webpackChunkName: 'Profile' */ "@/views/Authentication.vue"),
   },
 ];
 
 const router = new VueRouter({
-  mode: "history",
+  // mode: "history",
   base: process.env.BASE_URL,
   routes,
 });

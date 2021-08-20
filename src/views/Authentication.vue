@@ -1,54 +1,61 @@
 <template>
-  <div class="create-room">
-    <div class="create">
+  <div class="login">
+    <div class="form">
       <div class="toggle-btn">
         <div
           class="button"
-          :class="{ active: !createGroupTab }"
-          @click="toggleTab()"
+          :class="{ active: !createAccountTab }"
+          @click="loginRegisterToggle()"
         >
-          Add New Contact
+          Login
         </div>
         <div
           class="button"
-          :class="{ active: createGroupTab }"
-          @click="toggleTab()"
+          :class="{ active: createAccountTab }"
+          @click="loginRegisterToggle()"
         >
-          Create New Group
+          Register
         </div>
       </div>
       <div class="input-form">
         <div class="input-area">
           <custom-input
-            v-if="!createGroupTab"
+            v-if="createAccountTab"
+            class="input-component"
+            placeholder="Name"
+            v-model="name"
+            :errorMessage="nameError"
+            @blurAction="validateName()"
+            @keypressAction="nameError = ''"
+          />
+          <custom-input
             class="input-component"
             placeholder="Email"
             v-model="email"
-            :value="email"
             :errorMessage="emailError"
             @blurAction="validateEmail()"
             @keypressAction="emailError = ''"
           />
           <custom-input
-            v-if="createGroupTab"
             class="input-component"
-            placeholder="Group Name"
-            v-model="name"
-            :value="name"
-            :errorMessage="nameError"
-            :showEmojiPicker="true"
-            @blurAction="validateName()"
-            @keypressAction="nameError = ''"
+            placeholder="Password"
+            v-model="password"
+            :errorMessage="passwordError"
+            @blurAction="validatePassword()"
+            @keypressAction="passwordError = ''"
           />
         </div>
-        <custom-button btnName="Create" @btnAction="buttonAction()" />
+        <custom-button
+          :btnName="createAccountTab ? 'Register' : 'Login'"
+          @btnAction="buttonAction()"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import CustomInput from "@/components/CustomInput.vue";
 import CustomButton from "@/components/CustomButton.vue";
 
@@ -58,23 +65,21 @@ import CustomButton from "@/components/CustomButton.vue";
     CustomButton,
   },
 })
-export default class CreateRoom extends Vue {
-  createGroupTab = false;
+export default class Authentication extends Vue {
   email = "";
-  emailError = "";
+  password = "";
   name = "";
   nameError = "";
+  emailError = "";
+  passwordError = "";
+  register = false;
+  createAccountTab = false;
 
-  clearForm(): void {
-    this.name = "";
-    this.email = "";
-    this.nameError = "";
+  validateName(): void {
     this.emailError = "";
-  }
-
-  toggleTab(): void {
-    this.clearForm();
-    this.createGroupTab = !this.createGroupTab;
+    if (this.name.length < 4) {
+      this.nameError = "Name must be 4 character long";
+    }
   }
 
   validateEmail(): void {
@@ -89,11 +94,31 @@ export default class CreateRoom extends Vue {
     }
   }
 
-  validateName(): void {
-    this.emailError = "";
-    if (this.name.length < 4) {
-      this.nameError = "Name must be 4 character long";
+  validatePassword(): void {
+    this.passwordError = "";
+    if (!this.password) {
+      this.passwordError = "This field is Required";
+    } else if (this.password.length < 8) {
+      this.passwordError = "Password length should be greater than 8";
     }
+  }
+
+  disableButton(): boolean {
+    return !!this.emailError || !!this.passwordError;
+  }
+
+  clearForm(): void {
+    this.name = "";
+    this.email = "";
+    this.password = "";
+    this.nameError = "";
+    this.emailError = "";
+    this.passwordError = "";
+  }
+
+  loginRegisterToggle(): void {
+    this.clearForm();
+    this.createAccountTab = !this.createAccountTab;
   }
 
   buttonAction(): void {
@@ -102,8 +127,8 @@ export default class CreateRoom extends Vue {
 }
 </script>
 
-<style lang="scss" scoped>
-.create-room {
+<style lang="scss">
+.login {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -111,7 +136,7 @@ export default class CreateRoom extends Vue {
   overflow-y: scroll;
   height: 70vh;
 
-  .create {
+  .form {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -120,7 +145,7 @@ export default class CreateRoom extends Vue {
     width: 550px;
     padding: 1.5rem;
 
-    @media only screen and (max-width: 500px) {
+    @media only screen and (max-width: 900px) {
       width: 80%;
     }
 

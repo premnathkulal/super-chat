@@ -8,14 +8,14 @@
       :emojiWithBorder="false"
     />
     <div class="input-area">
-      <div class="input-box">
+      <div class="message-input-box">
         <i class="fa fa-smile-o" @click="showEmojies = !showEmojies"></i>
         <textarea
           v-model="message"
           rows="1"
           type="text"
           class="text-box"
-          placeholder="Search..."
+          placeholder="Type a message..."
         />
         <i class="fa fa-paperclip"></i>
         <i class="fa fa-camera"></i>
@@ -74,14 +74,14 @@ export default class MessageInput extends Vue {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .input-area {
   padding: 1rem;
   display: flex;
   align-items: center;
   justify-content: space-around;
 
-  .input-box {
+  .message-input-box {
     display: flex;
     flex: 1;
     align-items: center;
