@@ -39,6 +39,7 @@
             :showEmojiPicker="true"
             @blurAction="validateName()"
             @keypressAction="nameError = ''"
+            @setEmoji="setEmoji"
           />
         </div>
         <custom-button btnName="Create" @btnAction="buttonAction()" />
@@ -94,6 +95,10 @@ export default class CreateRoom extends Vue {
     if (this.name.length < 4) {
       this.nameError = "Name must be 4 character long";
     }
+  }
+
+  setEmoji(emoji: string): void {
+    this.name += emoji;
   }
 
   buttonAction(): void {

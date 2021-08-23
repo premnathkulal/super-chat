@@ -135,4 +135,16 @@ export default class ChatApp extends Vue {
     width: 100%;
   }
 }
+
+#EmojiPicker {
+  display: block;
+  width: 99.8%;
+  margin-bottom: -0.5rem;
+  transition: 0.2s;
+  #Emojis {
+    .container-emoji {
+      height: 13rem;
+    }
+  }
+}
 </style>

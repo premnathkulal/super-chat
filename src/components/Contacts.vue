@@ -69,6 +69,7 @@ export default class Contacts extends Vue {
 
   .input-area {
     padding: 1rem;
+    margin-right: 1.5rem;
 
     .search-box {
       display: flex;

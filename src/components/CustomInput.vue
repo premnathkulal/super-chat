@@ -13,7 +13,7 @@
         class="text-box"
         :placeholder="placeholder"
         :value="value"
-        @input="$emit('input', $event.target.value)"
+        @input="inputAction"
         @blur="$emit('blurAction')"
         @keypress="$emit('keypressAction')"
       />
@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { VEmojiPicker } from "v-emoji-picker";
 import { Emoji } from "v-emoji-picker/lib/models/Emoji";
@@ -49,9 +49,39 @@ export default class CustomInput extends Vue {
   showEmojies = false;
   createGroupTab = false;
 
+  inputAction(event: KeyboardEvent): void {
+    const evt = event.target as HTMLTextAreaElement;
+    if (evt.value) {
+      this.$emit("input", evt.value);
+      return;
+    }
+    // this.$emit("input", this.value + evt);
+  }
+
   selectEmoji(emoji: Emoji): void {
-    this.$emit("input", emoji.data.toString());
-    // console.log(emoji.data);
+    // let arrowRight = new KeyboardEvent("keydown", { key: 39 });
+    // this.inputAction(arrowRight);
+    // this.$emit("input", emoji.data);
+    // // console.log(typeof emoji.data);
+    // const event: Event = new Event("emoji-picker");
+    // Object.defineProperty(event, "target", {
+    //   writable: false,
+    //   value: emoji.data,
+    // });
+    // // event.target = {this.value}
+    // window.dispatchEvent(event);
+    // this.inputAction(event as unknown as KeyboardEvent);
+    this.$emit("setEmoji", emoji.data);
+  }
+
+  created(): void {
+    // window.addEventListener(
+    //   "emoji-picker",
+    //   (e: any) => {
+    //     this.inputAction(e as unknown as KeyboardEvent);
+    //   },
+    //   true
+    // );
   }
 }
 </script>
@@ -104,18 +134,6 @@ export default class CustomInput extends Vue {
     margin-left: -0.5rem;
     font-size: 0.8rem;
     color: red;
-  }
-}
-
-#EmojiPicker {
-  display: block;
-  width: 100%;
-  margin-bottom: -0.75rem;
-  transition: 0.2s;
-  #Emojis {
-    .container-emoji {
-      height: 10rem;
-    }
   }
 }
 </style>

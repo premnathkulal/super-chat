@@ -121,16 +121,4 @@ export default class MessageInput extends Vue {
     }
   }
 }
-
-#EmojiPicker {
-  display: block;
-  width: 100%;
-  margin-bottom: -0.75rem;
-  transition: 0.2s;
-  #Emojis {
-    .container-emoji {
-      height: 10rem;
-    }
-  }
-}
 </style>
