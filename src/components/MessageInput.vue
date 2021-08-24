@@ -11,11 +11,13 @@
       <div class="message-input-box">
         <i class="fa fa-smile-o" @click="showEmojies = !showEmojies"></i>
         <textarea
+          id="text-box"
           v-model="message"
           rows="1"
           type="text"
           class="text-box"
           placeholder="Type a message..."
+          @click="getCursorPosition()"
         />
         <i class="fa fa-paperclip"></i>
         <i class="fa fa-camera"></i>
@@ -32,7 +34,7 @@
 <script lang="ts">
 import { VEmojiPicker } from "v-emoji-picker";
 import { Emoji } from "v-emoji-picker/lib/models/Emoji";
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { SocketActions } from "@/types/types";
 
@@ -46,6 +48,7 @@ const socket = namespace("Socket");
 export default class MessageInput extends Vue {
   showEmojies = false;
   message = "";
+  curPos = 0;
 
   @Prop({ default: "" }) messageId!: string;
 
@@ -58,14 +61,33 @@ export default class MessageInput extends Vue {
 
   async sendMessage(): Promise<void> {
     if (this.message) {
-      //
       this.message = "";
       this.showEmojies = false;
     }
   }
 
+  getTextBox(): HTMLInputElement {
+    const element = document.getElementById("text-box");
+    const el = element as HTMLInputElement;
+    return el;
+  }
+
+  @Watch("message")
+  getCursorPosition(): void {
+    const el = this.getTextBox();
+    this.curPos = el.selectionStart || 0;
+  }
+
+  typeInTextarea(emoji: string) {
+    const el = this.getTextBox();
+    el.value =
+      el.value.slice(0, this.curPos) + emoji + el.value.slice(this.curPos);
+    this.curPos += emoji.length;
+  }
+
   selectEmoji(emoji: Emoji): void {
-    this.message = this.message + emoji.data;
+    // this.message = this.message + emoji.data;
+    this.typeInTextarea(emoji.data);
   }
 
   created(): void {
