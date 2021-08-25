@@ -5,6 +5,7 @@
       target="_blank"
       v-if="linkPreviews"
       class="preview-link mb-2"
+      rel="noreferrer"
     >
       <img
         :src="favicon || 'http://localhost:8080/favicon.ico'"
@@ -56,9 +57,6 @@ export default class Message extends Vue {
 </script>
 
 <style lang="scss" scoped>
-* {
-  margin: 0 !important;
-}
 .message-text {
   max-width: 20rem;
   word-break: break-all;

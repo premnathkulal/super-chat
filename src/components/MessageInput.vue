@@ -1,31 +1,46 @@
 <template>
   <div class="message-input">
-    <VEmojiPicker
-      v-if="showEmojies"
-      :emoji-size="28"
-      :emojis-by-row="8"
-      @select="selectEmoji"
-      :emojiWithBorder="false"
-    />
-    <div class="input-area">
-      <div class="message-input-box">
-        <i class="fa fa-smile-o" @click="showEmojies = !showEmojies"></i>
-        <textarea
-          id="text-box"
-          v-model="message"
-          rows="1"
-          type="text"
-          class="text-box"
-          placeholder="Type a message..."
-          @click="getCursorPosition()"
-        />
-        <i class="fa fa-paperclip"></i>
-        <i class="fa fa-camera"></i>
-        <i v-if="!message" class="fa fa-paper-plane"></i>
-      </div>
-      <div class="mic-icon">
-        <i v-if="!message" class="fa fa-microphone fa-icon"></i>
-        <i v-if="message" class="fa fa-paper-plane fa-icon"></i>
+    <div class="prem">
+      <VEmojiPicker
+        v-if="showEmojies"
+        :emoji-size="28"
+        :emojis-by-row="8"
+        @select="selectEmoji"
+        :emojiWithBorder="false"
+      />
+      <div class="input-area">
+        <div class="message-input-box">
+          <i></i>
+          <font-awesome-icon
+            icon="smile"
+            class="fa"
+            @click="showEmojies = !showEmojies"
+          />
+          <textarea
+            id="text-box"
+            v-model="message"
+            rows="1"
+            type="text"
+            class="text-box"
+            placeholder="Type a message..."
+            @click="getCursorPosition()"
+          />
+          <font-awesome-icon icon="paperclip" class="fa" />
+          <font-awesome-icon icon="camera" class="fa" />
+          <font-awesome-icon v-if="!message" icon="paper-plane" class="fa" />
+        </div>
+        <div class="mic-icon">
+          <font-awesome-icon
+            v-if="!message"
+            icon="microphone"
+            class="fa fa-icon"
+          />
+          <font-awesome-icon
+            v-if="message"
+            icon="paper-plane"
+            class="fa fa-icon"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -86,7 +101,6 @@ export default class MessageInput extends Vue {
   }
 
   selectEmoji(emoji: Emoji): void {
-    // this.message = this.message + emoji.data;
     this.typeInTextarea(emoji.data);
   }
 
@@ -97,49 +111,56 @@ export default class MessageInput extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.input-area {
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
+.message-input {
+  width: 100%;
 
-  .message-input-box {
-    display: flex;
-    flex: 1;
-    align-items: center;
-    background: white;
-    padding: 0.4rem 0.5rem;
-    border-radius: 5rem;
-    box-shadow: 5px 7px 32px rgb(153, 149, 149);
+  .prem {
+    padding: 0 2px;
+    .input-area {
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
 
-    .text-box {
-      border: none;
-      box-shadow: none;
-      outline: none;
-      flex: 1;
-      width: 50px;
-    }
+      .message-input-box {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        background: white;
+        padding: 0.4rem 0.5rem;
+        border-radius: 5rem;
+        box-shadow: 5px 7px 32px rgb(153, 149, 149);
 
-    .fa {
-      cursor: pointer;
-      font-weight: bold;
-      padding: 0 0.3rem;
-      font-size: 1.2rem;
-    }
-    .fa-smile-o {
-      padding-right: 0.5rem;
-      font-size: 1.5rem;
-    }
-  }
-  .mic-icon {
-    cursor: pointer;
-    padding: 0.1rem;
-    padding-top: 0.1rem;
-    .fa-icon {
-      border-radius: 50%;
-      padding-left: 0.5rem;
-      color: #30224b;
-      font-size: 1.3rem;
+        .text-box {
+          border: none;
+          box-shadow: none;
+          outline: none;
+          flex: 1;
+          // width: 50px;
+        }
+
+        .fa {
+          cursor: pointer;
+          font-weight: bold;
+          padding: 0 0.3rem;
+          font-size: 1.2rem;
+        }
+        .fa-smile-o {
+          padding-right: 0.5rem;
+          font-size: 1.5rem;
+        }
+      }
+      .mic-icon {
+        cursor: pointer;
+        padding: 0.1rem;
+        padding-top: 0.1rem;
+        .fa-icon {
+          border-radius: 50%;
+          padding-left: 0.5rem;
+          color: #30224b;
+          font-size: 1.3rem;
+        }
+      }
     }
   }
 }

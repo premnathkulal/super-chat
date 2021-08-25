@@ -11,6 +11,11 @@
     "postinstall": "if test \"$NODE_ENV\" = \"production\" ; then yarn build ; fi "
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.36",
+    "@fortawesome/free-brands-svg-icons": "^5.15.4",
+    "@fortawesome/free-regular-svg-icons": "^5.15.4",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/vue-fontawesome": "^2.0.2",
     "@lottiefiles/lottie-player": "^1.0.4",
     "@popperjs/core": "^2.9.2",
     "axios": "^0.21.1",

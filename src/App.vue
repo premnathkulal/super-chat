@@ -113,9 +113,12 @@ export default class ChatApp extends Vue {
 
 <style lang="scss">
 * {
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  font-display: swap;
   padding: 0;
   margin: 0;
 }
+
 #app {
   .chat-window {
     display: flex;
@@ -138,7 +141,7 @@ export default class ChatApp extends Vue {
 
 #EmojiPicker {
   display: block;
-  width: 99.8%;
+  width: 100%;
   margin-bottom: -0.5rem;
   transition: 0.2s;
   #Emojis {
@@ -146,5 +149,11 @@ export default class ChatApp extends Vue {
       height: 13rem;
     }
   }
+}
+
+a {
+  color: #2e008a;
+  font-weight: bold;
+  background: rgba(190, 225, 247, 0.445);
 }
 </style>

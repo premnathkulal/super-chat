@@ -31,9 +31,18 @@ const routes: Array<RouteConfig> = [
 ];
 
 const router = new VueRouter({
-  // mode: "history",
+  mode: "history",
   base: process.env.BASE_URL,
   routes,
 });
+
+// router.beforeEach((to, from, next) => {
+//   // console.log(to.name, from.name);
+//   // if (to.name !== "Profile") {
+//   //   next({ name: "Profile" });
+//   // } else {
+//   //   next();
+//   // }
+// });
 
 export default router;

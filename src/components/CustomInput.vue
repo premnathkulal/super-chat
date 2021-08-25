@@ -9,6 +9,7 @@
     />
     <div class="input-box">
       <input
+        id="text-box"
         type="text"
         class="text-box"
         :placeholder="placeholder"
@@ -16,12 +17,14 @@
         @input="inputAction"
         @blur="$emit('blurAction')"
         @keypress="$emit('keypressAction')"
+        @click="getCursorPosition()"
       />
-      <i
+      <font-awesome-icon
         v-if="showEmojiPicker"
-        class="fa fa-smile-o"
+        icon="smile"
+        class="fa"
         @click.stop="showEmojies = !showEmojies"
-      ></i>
+      />
     </div>
     <p class="error-message">{{ errorMessage }}</p>
   </div>
@@ -48,6 +51,19 @@ export default class CustomInput extends Vue {
 
   showEmojies = false;
   createGroupTab = false;
+  curPos = 0;
+
+  @Watch("value")
+  getCursorPosition(): void {
+    const el = this.getTextBox();
+    this.curPos = el.selectionStart || 0;
+  }
+
+  getTextBox(): HTMLInputElement {
+    const element = document.getElementById("text-box");
+    const el = element as HTMLInputElement;
+    return el;
+  }
 
   inputAction(event: KeyboardEvent): void {
     const evt = event.target as HTMLTextAreaElement;
@@ -55,33 +71,21 @@ export default class CustomInput extends Vue {
       this.$emit("input", evt.value);
       return;
     }
-    // this.$emit("input", this.value + evt);
+  }
+
+  typeInTextarea(emoji: string) {
+    const el = this.getTextBox();
+    el.value =
+      el.value.slice(0, this.curPos) + emoji + el.value.slice(this.curPos);
+    this.curPos += emoji.length;
   }
 
   selectEmoji(emoji: Emoji): void {
-    // let arrowRight = new KeyboardEvent("keydown", { key: 39 });
-    // this.inputAction(arrowRight);
-    // this.$emit("input", emoji.data);
-    // // console.log(typeof emoji.data);
-    // const event: Event = new Event("emoji-picker");
-    // Object.defineProperty(event, "target", {
-    //   writable: false,
-    //   value: emoji.data,
-    // });
-    // // event.target = {this.value}
-    // window.dispatchEvent(event);
-    // this.inputAction(event as unknown as KeyboardEvent);
-    this.$emit("setEmoji", emoji.data);
+    this.typeInTextarea(emoji.data);
   }
 
   created(): void {
-    // window.addEventListener(
-    //   "emoji-picker",
-    //   (e: any) => {
-    //     this.inputAction(e as unknown as KeyboardEvent);
-    //   },
-    //   true
-    // );
+    //
   }
 }
 </script>
@@ -117,13 +121,9 @@ export default class CustomInput extends Vue {
     .fa {
       cursor: pointer;
       font-weight: bold;
-      height: 1rem;
-      margin-top: -0.5rem;
-    }
-    .fa-smile-o {
       padding: 0;
       padding-left: 0.5rem;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
     }
   }
 

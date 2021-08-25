@@ -3,7 +3,7 @@
     <div class="input-area">
       <div class="search-box">
         <input type="text" class="text-box" placeholder="Search..." />
-        <i class="fa fa-search"></i>
+        <font-awesome-icon icon="search" />
       </div>
     </div>
     <div class="contact-list">
@@ -74,6 +74,7 @@ export default class Contacts extends Vue {
     .search-box {
       display: flex;
       width: 100%;
+
       align-items: center;
       background: white;
       padding: 0.4rem 0.5rem;
@@ -81,6 +82,7 @@ export default class Contacts extends Vue {
       box-shadow: 5px 7px 8px rgb(201, 198, 198);
 
       .text-box {
+        height: 1.5rem;
         border: none;
         box-shadow: none;
         outline: none;

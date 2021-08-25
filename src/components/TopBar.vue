@@ -6,7 +6,7 @@
         class="top-bar-content menu-bar"
         @click="$emit('toggleDrawer')"
       >
-        <i class="fa fa-chevron-left"></i>
+        <font-awesome-icon icon="chevron-left" />
       </div>
       <div class="top-bar-content user-image">P</div>
       <div class="top-bar-content user-info">
@@ -14,7 +14,11 @@
         <div class="typing-status">Typing...</div>
       </div>
     </div>
-    <i v-if="tabType === 'group'" class="fa fa-info-circle"></i>
+    <font-awesome-icon
+      v-if="tabType === 'group'"
+      icon="info-circle"
+      class="fa"
+    />
   </div>
 </template>
 

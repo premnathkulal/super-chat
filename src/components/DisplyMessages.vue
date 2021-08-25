@@ -17,6 +17,7 @@
           <img
             class="img"
             :src="`https://avatars.dicebear.com/api/avataaars/${msg.from}.svg`"
+            alt="user-img"
           />
         </div>
       </div>
@@ -283,7 +284,7 @@ export default class DisplyMessages extends Vue {
 
 <style lang="scss" scoped>
 .display-message {
-  margin: 1rem 0.4rem;
+  // margin: 1rem 0.4rem;
   .message,
   .my-message {
     display: flex;

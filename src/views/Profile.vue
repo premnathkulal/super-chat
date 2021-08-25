@@ -7,7 +7,9 @@
       `"
     >
       <div class="camera-icon">
-        <i class="fa fa-camera"></i>
+        <div icon="camera" class="fa">
+          <font-awesome-icon icon="camera" />
+        </div>
       </div>
     </div>
 
@@ -45,6 +47,7 @@ export default class Profile extends Vue {
     border-radius: 50%;
     overflow: hidden;
     background-size: cover;
+    background: red;
 
     .camera-icon {
       display: none;
@@ -54,15 +57,16 @@ export default class Profile extends Vue {
       .camera-icon {
         display: block;
         cursor: pointer;
-        .fa-camera {
+
+        .fa {
           display: flex;
           justify-content: center;
           align-items: center;
-          height: 10rem;
-          width: 10rem;
           font-size: 2.5rem;
-          color: #35196d;
+          color: black;
           background: rgba(0, 0, 0, 0.418);
+          height: 20rem;
+          width: 20rem;
         }
       }
     }

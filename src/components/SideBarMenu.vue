@@ -5,22 +5,26 @@
         @click="$emit('selectTabType', 'personal')"
         class="options personal-chat"
       >
-        <i class="fa fa-comments"></i>
+        <font-awesome-icon icon="comments" class="fa" />
       </div>
       <div @click="$emit('selectTabType', 'group')" class="options group-chat">
-        <i class="fa fa-users"></i>
+        <font-awesome-icon icon="users" class="fa" />
       </div>
       <div class="options profile">
-        <i @click="$emit('selectTabType', 'Profile')" class="fa fa-user"></i>
+        <font-awesome-icon
+          icon="user"
+          @click="$emit('selectTabType', 'Profile')"
+          class="fa fa-user"
+        />
       </div>
       <div @click="$emit('selectTabType', 'Create')" class="options add-btn">
-        <i class="fa fa-plus-circle"></i>
+        <font-awesome-icon icon="plus-circle" class="fa" />
       </div>
       <div v-if="lightTheme" @click="toggleTheme()" class="options theme-icon">
-        <i class="fa fa-moon-o"></i>
+        <font-awesome-icon icon="moon" class="fa" />
       </div>
       <div v-else @click="toggleTheme()" class="options theme-icon">
-        <i class="fa fa-sun-o"></i>
+        <font-awesome-icon icon="sun" class="fa" />
       </div>
     </div>
   </div>
