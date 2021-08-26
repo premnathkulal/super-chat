@@ -36,7 +36,7 @@
             v-model="name"
             :value="name"
             :errorMessage="nameError"
-            :showEmojiPicker="true"
+            :showEmojiPicker="showEmojiPicker"
             @blurAction="validateName()"
             @keypressAction="nameError = ''"
             @setEmoji="setEmoji"
@@ -61,6 +61,7 @@ import CustomButton from "@/components/CustomButton.vue";
 })
 export default class CreateRoom extends Vue {
   createGroupTab = false;
+  showEmojiPicker = false;
   email = "";
   emailError = "";
   name = "";
@@ -76,6 +77,7 @@ export default class CreateRoom extends Vue {
   toggleTab(): void {
     this.clearForm();
     this.createGroupTab = !this.createGroupTab;
+    this.showEmojiPicker = !this.showEmojiPicker;
   }
 
   validateEmail(): void {

@@ -1,7 +1,7 @@
 <template>
   <div class="custom-input">
     <VEmojiPicker
-      v-if="showEmojies"
+      v-if="showEmojies && showEmojiPicker"
       :emoji-size="28"
       :emojis-by-row="8"
       @select="selectEmoji"
