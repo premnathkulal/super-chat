@@ -19,8 +19,8 @@ export class ChatController {
     @Param('id') id: string,
     @Body() data: { data: string },
   ): Promise<any> {
-    const result = this.chatServices.sendChatGroup(id, data.data);
-    return result;
+    // const result = this.chatServices.sendChatGroup(id, data.data);
+    return { status: HttpStatus.OK, data };
   }
 
   @Post('chat-group/:id')
