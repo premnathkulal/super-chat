@@ -39,6 +39,10 @@ import Contacts from "@/components/Contacts.vue";
 import TopBar from "@/components/TopBar.vue";
 import MessageInput from "@/components/MessageInput.vue";
 import router from "./router";
+import { namespace } from "vuex-class";
+import { SocketActions } from "./types/types";
+
+const socket = namespace("Socket");
 
 @Component({
   components: {
@@ -58,6 +62,9 @@ export default class ChatApp extends Vue {
   messageText = "";
   chatTabType = "all";
   tabType = "all";
+
+  @socket.Action(SocketActions.CONNECTION)
+  public connectToSocket!: () => void;
 
   @Watch("window.innerWidth")
   changedWidth(): void {
@@ -107,6 +114,7 @@ export default class ChatApp extends Vue {
   created(): void {
     this.changedWidth();
     window.addEventListener("resize", this.changedWidth);
+    this.connectToSocket();
   }
 }
 </script>

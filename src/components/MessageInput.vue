@@ -1,6 +1,6 @@
 <template>
   <div class="message-input">
-    <div class="prem">
+    <div class="message-input-container">
       <VEmojiPicker
         v-if="showEmojies"
         :emoji-size="28"
@@ -24,10 +24,16 @@
             class="text-box"
             placeholder="Type a message..."
             @click="getCursorPosition()"
+            @input="getCursorPositionWhileTyping"
           />
           <font-awesome-icon icon="paperclip" class="fa" />
           <font-awesome-icon icon="camera" class="fa" />
-          <font-awesome-icon v-if="!message" icon="paper-plane" class="fa" />
+          <font-awesome-icon
+            v-if="!message"
+            @click="sendMessage()"
+            icon="paper-plane"
+            class="fa"
+          />
         </div>
         <div class="mic-icon">
           <font-awesome-icon
@@ -37,6 +43,7 @@
           />
           <font-awesome-icon
             v-if="message"
+            @click="sendMessage()"
             icon="paper-plane"
             class="fa fa-icon"
           />
@@ -51,9 +58,11 @@ import { VEmojiPicker } from "v-emoji-picker";
 import { Emoji } from "v-emoji-picker/lib/models/Emoji";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import { SocketActions } from "@/types/types";
+import { ChatActions, SocketActions } from "@/types/types";
+import { io } from "socket.io-client";
 
 const socket = namespace("Socket");
+const chat = namespace("Chat");
 
 @Component({
   components: {
@@ -64,21 +73,18 @@ export default class MessageInput extends Vue {
   showEmojies = false;
   message = "";
   curPos = 0;
+  socket: any = null;
 
   @Prop({ default: "" }) messageId!: string;
 
   @socket.Action(SocketActions.STARTED_TYPING)
-  public userTyping!: (email: string) => void;
+  public userTyping!: (id: string) => void;
+
+  @socket.Action(SocketActions.SEND_MESSAGE)
+  public sendMessageToServer!: (message: string) => void;
 
   messageTyping(): void {
-    //
-  }
-
-  async sendMessage(): Promise<void> {
-    if (this.message) {
-      this.message = "";
-      this.showEmojies = false;
-    }
+    console.log("typing...");
   }
 
   getTextBox(): HTMLInputElement {
@@ -87,16 +93,20 @@ export default class MessageInput extends Vue {
     return el;
   }
 
-  @Watch("message")
   getCursorPosition(): void {
     const el = this.getTextBox();
     this.curPos = el.selectionStart || 0;
+  }
+
+  getCursorPositionWhileTyping($event: InputEvent): void {
+    this.getCursorPosition();
   }
 
   typeInTextarea(emoji: string) {
     const el = this.getTextBox();
     el.value =
       el.value.slice(0, this.curPos) + emoji + el.value.slice(this.curPos);
+    this.message = el.value;
     this.curPos += emoji.length;
   }
 
@@ -104,8 +114,17 @@ export default class MessageInput extends Vue {
     this.typeInTextarea(emoji.data);
   }
 
+  async sendMessage(): Promise<void> {
+    this.sendMessageToServer(this.message);
+    if (this.message) {
+      this.message = "";
+      this.showEmojies = false;
+    }
+  }
+
   created(): void {
-    //
+    // const host = `localhost:3000`;
+    // this.socket = io(host, { transports: ["websocket"] });
   }
 }
 </script>
@@ -114,7 +133,7 @@ export default class MessageInput extends Vue {
 .message-input {
   width: 100%;
 
-  .prem {
+  .message-input-container {
     padding: 0 2px;
     .input-area {
       padding: 1rem;
@@ -126,6 +145,7 @@ export default class MessageInput extends Vue {
         display: flex;
         flex: 1;
         align-items: center;
+        justify-content: center;
         background: white;
         padding: 0.4rem 0.5rem;
         border-radius: 5rem;
@@ -136,6 +156,8 @@ export default class MessageInput extends Vue {
           box-shadow: none;
           outline: none;
           flex: 1;
+          height: 1.5rem;
+          font-size: 1.1rem;
           // width: 50px;
         }
 

@@ -1,38 +1,46 @@
 <template>
   <div class="display-message" ref="scrollToMe">
-    <div
-      v-for="(msg, index) in personal[0].messages"
-      :key="index"
-      :class="'navin123' === msg.from ? 'my-message' : ''"
-      class="message"
-      @up="prems()"
-    >
-      <div class="user-pic" v-if="index < personal[0].messages.length">
-        <div
-          v-if="
-            index + 1 === personal[0].messages.length ||
-            msg.from !== personal[0].messages[index + 1].from
-          "
-        >
-          <img
-            class="img"
-            :src="`https://avatars.dicebear.com/api/avataaars/${msg.from}.svg`"
-            alt="user-img"
-          />
+    <template v-if="personal[0]">
+      <div
+        v-for="(msg, index) in personal[0].messages"
+        :key="index"
+        :class="'navin123' === msg.from ? 'my-message' : ''"
+        class="message"
+        @up="prems()"
+      >
+        <div class="user-pic" v-if="index < personal[0].messages.length">
+          <div
+            v-if="
+              index + 1 === personal[0].messages.length ||
+              msg.from !== personal[0].messages[index + 1].from
+            "
+          >
+            <img
+              class="img"
+              :src="`https://avatars.dicebear.com/api/avataaars/${msg.from}.svg`"
+              alt="user-img"
+            />
+          </div>
+        </div>
+        <div class="message-contents">
+          <!-- <div class="user-name">{{ msg.from }}</div> -->
+          <message :message="msg.message" />
+          <div class="time">{{ "10:00AM" }}</div>
         </div>
       </div>
-      <div class="message-contents">
-        <!-- <div class="user-name">{{ msg.from }}</div> -->
-        <message :message="msg.message" />
-        <div class="time">{{ "10:00AM" }}</div>
-      </div>
-    </div>
+    </template>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import Message from "@/components/Message.vue";
+import { namespace } from "vuex-class";
+import { ChatActions } from "@/types/types";
+import { io } from "socket.io-client";
+
+const chat = namespace("Chat");
+const socket = namespace("Socket");
 
 @Component({
   components: {
@@ -40,228 +48,18 @@ import Message from "@/components/Message.vue";
   },
 })
 export default class DisplyMessages extends Vue {
-  personal = [
-    {
-      id: "messageID_1",
-      messageId: "navin123-pramod456",
-      category: "personal",
-      messages: [
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "lets start",
-        },
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "Hello. Pramod",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "Hello. Navin",
-        },
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "Hope you are doing well",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "Yeah",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "How r u Navin?",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "I saw u near the park today morning",
-        },
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "Oh I just went for quick walk",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "From tomorrow I'll join you",
-        },
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "Yeah, sure Pramod",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "I saw u near the park today morning",
-        },
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "Oh I just went for quick walk",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "From tomorrow I'll join you",
-        },
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "Yeah, sure Pramod",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "I saw u near the park today morning",
-        },
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "Oh I just went for quick walk",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "From tomorrow I'll join you",
-        },
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "Yeah, sure Pramod",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "I saw u near the park today morning",
-        },
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "Oh I just went for quick walk",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "From tomorrow I'll join you",
-        },
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "Yeah, sure Pramod",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "I saw u near the park today morning",
-        },
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "Oh I just went for quick walk",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "From tomorrow I'll join you",
-        },
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "Yeah, sure Pramod",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "I saw u near the park today morning",
-        },
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "Oh I just went for quick walk",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "https://upstox.com/",
-        },
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "https://twitter.com/youyuxi",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "https://www.whatsapp.com",
-        },
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message:
-            "https://v3.vuejs.org/guide/composition-api-introduction.html#standalone-computed-properties",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "From tomorrow I'll join you",
-        },
-        {
-          from: "pramod456",
-          top: "navin123",
-          time: "Tue Aug 17 2021 17:37:51",
-          message: "https://www.facebook.com/ Please like share and subscribe",
-        },
-        {
-          from: "navin123",
-          top: "pramod456",
-          time: "Tue Aug 17 2021 17:37:51",
-          message:
-            "https://www.youtube.com/watch?v=6GA6X8XHE14 Please like share and subscribe",
-        },
-      ],
-    },
-  ];
+  personal = [];
 
+  @chat.Getter
+  isLoading!: boolean;
+
+  @socket.Getter("chat")
+  chats!: any;
+
+  @chat.Action(ChatActions.LOAD_CHAT)
+  public loadChatData!: (id: string) => any;
+
+  @Watch("isLoading")
   windowScroll(): void {
     const element = this.$refs.scrollToMe as HTMLElement;
     if (element) {
@@ -272,12 +70,27 @@ export default class DisplyMessages extends Vue {
     }
   }
 
+  @Watch("chats")
+  setMessages(): void {
+    this.personal = this.chats;
+  }
+
   mounted(): void {
     this.windowScroll();
   }
 
   created(): void {
-    //
+    this.loadChatData("navin123");
+    // const host = `localhost:3000`;
+    // const socket = io(host, { transports: ["websocket"] });
+    // socket.on("messageToClient", (data: any) => {
+    //   new Promise((resolve, reject) => {
+    //     this.personal = data.data;
+    //     resolve("done");
+    //   }).then(() => {
+    //     this.windowScroll();
+    //   });
+    // });
   }
 }
 </script>

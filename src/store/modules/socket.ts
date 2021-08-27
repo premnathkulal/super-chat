@@ -7,42 +7,54 @@ class Socket extends VuexModule {
   public welcomeMessage = "";
   public userTyping = "";
 
-  @Mutation
-  public [SocketMutations.WELCOME_MESSAGE](message: string): void {
-    this.welcomeMessage = message;
-  }
+  public chatContent: any[] = [];
 
   @Action
-  [SocketActions.WELCOME_MESSAGE](message: string): void {
-    this.context.commit(SocketMutations.WELCOME_MESSAGE, message);
-  }
-
-  @Action
-  [SocketActions.CONNECTION](userDetails: { email: string }): void {
-    connectionSocket.connect(userDetails);
-  }
-
-  @Action
-  [SocketActions.STARTED_TYPING](email: string): void {
-    connectionSocket.userTyping(email);
+  [SocketActions.CONNECTION](): // userDetails: { email: string }
+  void {
+    connectionSocket.connect();
   }
 
   @Mutation
-  public [SocketMutations.USER_TYPING](userData: string): void {
-    this.userTyping = userData;
+  public [SocketMutations.RECEIVE_MESSAGE](message: any): void {
+    this.chatContent = message;
   }
 
   @Action
-  [SocketActions.USER_TYPING](userData: string): void {
-    this.context.commit(SocketMutations.USER_TYPING, userData);
+  public [SocketActions.RECEIVE_MESSAGE](message: string): void {
+    this.context.commit(SocketMutations.RECEIVE_MESSAGE, message);
   }
 
-  get getWelcomeMessage(): string {
-    return this.welcomeMessage;
+  @Action
+  async [SocketActions.SEND_MESSAGE](message: string): Promise<void> {
+    const data = await connectionSocket.sendMessage(message);
   }
 
-  get getIsUserTyping(): string {
-    return this.userTyping;
+  // @Action
+  // [SocketActions.STARTED_TYPING](email: string): void {
+  //   connectionSocket.userTyping(email);
+  // }
+
+  // @Mutation
+  // public [SocketMutations.USER_TYPING](userData: string): void {
+  //   this.userTyping = userData;
+  // }
+
+  // @Action
+  // [SocketActions.USER_TYPING](userData: string): void {
+  //   this.context.commit(SocketMutations.USER_TYPING, userData);
+  // }
+
+  // get getWelcomeMessage(): string {
+  //   return this.welcomeMessage;
+  // }
+
+  // get getIsUserTyping(): string {
+  //   return this.userTyping;
+  // }
+
+  get chat(): any {
+    return this.chatContent;
   }
 }
 
