@@ -23,19 +23,20 @@ export class ChatController {
     return { status: HttpStatus.OK, data };
   }
 
-  @Post('chat-group/:id')
-  async userTyping(@Param('id') id: string): Promise<any> {
-    return {
-      status: HttpStatus.OK,
-      data: {
-        name: 'Premnath',
-        msg: 'Hello',
-      },
-    };
+  @Post('/create-group')
+  async createGroup(@Body() data: { data: string }): Promise<any> {
+    const result = await this.chatServices.createGroup(data.data);
+    return result;
   }
 
-  @Post('/chat-typing/:id')
-  async msgTyping(@Param('id') id: string): Promise<any> {
-    this.chatServices.msgTyping(id);
-  }
+  // @Post('chat-group/:id')
+  // async userTyping(@Param('id') id: string): Promise<any> {
+  //   return {
+  //     status: HttpStatus.OK,
+  //     data: {
+  //       name: 'Premnath',
+  //       msg: 'Hello',
+  //     },
+  //   };
+  // }
 }

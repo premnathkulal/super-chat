@@ -201,26 +201,40 @@ export class ChatService {
       messages: [
         {
           from: 'navin123',
-          time: 'Tue Aug 17 2021 17:37:51',
           message: 'Hello',
         },
       ],
     },
   ];
 
+  group: any = [];
+
   async findChatGroup(id: string): Promise<any> {
     const result = this.groupChat;
     return result;
   }
 
-  async sendChatGroup(from: string, message: string): Promise<any> {
+  async sendChatGroup(data: {
+    message: string;
+    sender: string;
+    room: string;
+  }): Promise<any> {
     await this.groupChat[0].messages.push({
-      from,
-      message,
+      from: data.sender,
+      message: data.message,
     });
     return {
       status: HttpStatus.OK,
       data: this.groupChat,
+    };
+  }
+
+  async createGroup(groupName: string): Promise<any> {
+    await this.group.push(groupName);
+    return {
+      status: HttpStatus.CREATED,
+      message: 'Created',
+      data: this.group,
     };
   }
 
