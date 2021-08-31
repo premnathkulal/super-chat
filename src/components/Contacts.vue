@@ -7,49 +7,87 @@
       </div>
     </div>
     <div class="contact-list">
-      <div
-        v-if="tabType === 'all' || tabType === 'personal'"
-        class="contact-info"
-        @click="$emit('loadMessage')"
-      >
-        <div class="profile-pic"></div>
-        <div class="contact-details">
-          <div class="name">Pramod</div>
-          <div class="msg-status">Pramod: Cool</div>
+      <template v-for="(i, index) in 4">
+        <div
+          :key="index"
+          v-if="tabType === 'all' || tabType === 'personal'"
+          class="contact-info"
+          @click="enterChat(`Name ${i}`)"
+        >
+          <img
+            class="profile-pic"
+            :src="`https://avatars.dicebear.com/api/avataaars/Name-${i}.svg`"
+            alt="user-img"
+          />
+          <div class="contact-details">
+            <div class="name">Navin</div>
+            <div class="msg-status">Navin: Good Evening</div>
+          </div>
         </div>
-      </div>
-      <div
-        v-if="tabType === 'all' || tabType === 'personal'"
-        class="contact-info"
-        @click="$emit('loadMessage')"
-      >
-        <div class="profile-pic"></div>
-        <div class="contact-details">
-          <div class="name">Navin</div>
-          <div class="msg-status">Navin: Good Evening</div>
+      </template>
+      <template v-for="(item, index) in group">
+        <div
+          :key="index"
+          v-if="tabType === 'all' || tabType === 'group'"
+          class="contact-info"
+          @click="enterChat(item)"
+        >
+          <img
+            class="profile-pic"
+            :src="`https://avatars.dicebear.com/api/avataaars/${item}.svg`"
+            alt="user-img"
+          />
+          <div class="contact-details">
+            <div class="name">{{ item }}</div>
+            <div class="msg-status">Vidya: Nothing!!!</div>
+          </div>
         </div>
-      </div>
-      <div
-        v-if="tabType === 'all' || tabType === 'group'"
-        class="contact-info"
-        @click="$emit('loadMessage')"
-      >
-        <div class="profile-pic"></div>
-        <div class="contact-details">
-          <div class="name">Week End Party</div>
-          <div class="msg-status">Vidya: Nothing!!!</div>
-        </div>
-      </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import { SocketActions } from "@/types/types";
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+
+const contacts = namespace("Contacts");
+const socket = namespace("Socket");
 
 @Component
 export default class Contacts extends Vue {
   @Prop({ default: "all" }) tabType!: string;
+
+  roomId = "";
+
+  @contacts.Getter
+  group!: any;
+
+  @socket.Action(SocketActions.JOIN_ROOM)
+  public joinRoom!: (payload: { userInfo: string; room: string }) => void;
+
+  @socket.Action(SocketActions.LEAVE_ROOM)
+  public leaveRoom!: (payload: { userInfo: string; room: string }) => void;
+
+  leaveChat(data: { userInfo: string; room: string }): void {
+    this.leaveRoom(data);
+  }
+
+  enterChat(item: string): void {
+    if (this.roomId) {
+      this.leaveChat({
+        userInfo: "",
+        room: this.roomId,
+      });
+    }
+    this.roomId = item;
+    this.$emit("loadMessage", item);
+    this.joinRoom({
+      userInfo: "",
+      room: item,
+    });
+  }
 }
 </script>
 

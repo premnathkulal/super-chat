@@ -6,7 +6,6 @@
         :key="index"
         :class="'navin123' === msg.from ? 'my-message' : ''"
         class="message"
-        @up="prems()"
       >
         <div class="user-pic" v-if="index < personal[0].messages.length">
           <div
@@ -24,7 +23,7 @@
         </div>
         <div class="message-contents">
           <!-- <div class="user-name">{{ msg.from }}</div> -->
-          <message :message="msg.message" />
+          <message :message="msg.message" @windowScroll="windowScroll" />
           <div class="time">{{ "10:00AM" }}</div>
         </div>
       </div>
@@ -37,7 +36,7 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import Message from "@/components/Message.vue";
 import { namespace } from "vuex-class";
 import { ChatActions } from "@/types/types";
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 
 const chat = namespace("Chat");
 const socket = namespace("Socket");
@@ -53,8 +52,8 @@ export default class DisplyMessages extends Vue {
   @chat.Getter
   isLoading!: boolean;
 
-  @socket.Getter("chat")
-  chats!: any;
+  @chat.Getter
+  chatData!: any;
 
   @chat.Action(ChatActions.LOAD_CHAT)
   public loadChatData!: (id: string) => any;
@@ -70,9 +69,9 @@ export default class DisplyMessages extends Vue {
     }
   }
 
-  @Watch("chats")
+  @Watch("chatData")
   setMessages(): void {
-    this.personal = this.chats;
+    this.personal = this.chatData;
   }
 
   mounted(): void {

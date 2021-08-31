@@ -11,7 +11,7 @@
       <contacts
         v-if="((smallDevice && openDrawer) || !smallDevice) && homePage"
         :tabType="chatTabType"
-        @loadMessage="loadMessage()"
+        @loadMessage="loadMessage"
       />
       <div
         v-if="(smallDevice && !openDrawer) || !smallDevice"
@@ -21,10 +21,11 @@
           v-if="homePage"
           :tabType="tabType"
           :showMenuIcon="smallDevice"
+          :roomId="roomId"
           @toggleDrawer="toggleDrawer()"
         />
         <router-view class="router-view" />
-        <message-input v-if="homePage" />
+        <message-input v-if="homePage" :roomId="roomId" />
       </div>
       <router-view v-else-if="!homePage" class="router-view" />
     </div>
@@ -62,6 +63,7 @@ export default class ChatApp extends Vue {
   messageText = "";
   chatTabType = "all";
   tabType = "all";
+  roomId = "";
 
   @socket.Action(SocketActions.CONNECTION)
   public connectToSocket!: () => void;
@@ -91,7 +93,8 @@ export default class ChatApp extends Vue {
     //
   }
 
-  loadMessage(): void {
+  loadMessage(roomName: string): void {
+    this.roomId = roomName;
     this.openDrawer = false;
   }
 

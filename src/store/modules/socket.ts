@@ -15,19 +15,14 @@ class Socket extends VuexModule {
     connectionSocket.connect();
   }
 
-  @Mutation
-  public [SocketMutations.RECEIVE_MESSAGE](message: any): void {
-    this.chatContent = message;
+  @Action
+  [SocketActions.JOIN_ROOM](data: any): void {
+    connectionSocket.joinRoom(data);
   }
 
   @Action
-  public [SocketActions.RECEIVE_MESSAGE](message: string): void {
-    this.context.commit(SocketMutations.RECEIVE_MESSAGE, message);
-  }
-
-  @Action
-  async [SocketActions.SEND_MESSAGE](message: string): Promise<void> {
-    const data = await connectionSocket.sendMessage(message);
+  [SocketActions.LEAVE_ROOM](data: any): void {
+    connectionSocket.leaveRoom(data);
   }
 
   // @Action
@@ -52,10 +47,6 @@ class Socket extends VuexModule {
   // get getIsUserTyping(): string {
   //   return this.userTyping;
   // }
-
-  get chat(): any {
-    return this.chatContent;
-  }
 }
 
 export default Socket;

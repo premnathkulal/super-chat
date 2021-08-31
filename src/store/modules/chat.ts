@@ -1,6 +1,7 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
 import { ChatMutations, ChatActions } from "@/types/types";
 import { fetchGroupChat, sendGroupChat } from "@/utils/api";
+import { connectionSocket } from "..";
 
 @Module({ namespaced: true })
 class Chat extends VuexModule {
@@ -33,20 +34,33 @@ class Chat extends VuexModule {
   }
 
   @Mutation
-  public [ChatMutations.SEND_MESSAGE](): void {
-    //
+  public [ChatMutations.RECEIVE_MESSAGE](data: any): void {
+    // console.log(data);
+    this.chatContent = data;
   }
 
   @Action
-  [ChatActions.SEND_MESSAGE](data: { id: string; message: string }): void {
-    // this.context.commit(ChatMutations.SET_LOADING);
-    sendGroupChat(data.id, data.message).then(async (data) => {
-      // await this.context.commit(ChatMutations.SEND_MESSAGE, data.data.data);
-      // this.context.commit(ChatMutations.SET_LOADING);
+  public [ChatActions.RECEIVE_MESSAGE](data: {
+    message: string;
+    sender: string;
+    room: string;
+  }): void {
+    this.context.commit(ChatMutations.RECEIVE_MESSAGE, data);
+  }
+
+  @Action
+  async [ChatActions.SEND_MESSAGE](payLoad: {
+    message: string;
+    roomId: string;
+  }): Promise<void> {
+    const data = await connectionSocket.sendMessage({
+      message: payLoad.message,
+      room: payLoad.roomId,
+      from: "navin123",
     });
   }
 
-  get chat(): any {
+  get chatData(): any {
     return this.chatContent;
   }
 

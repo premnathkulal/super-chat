@@ -52,6 +52,10 @@
 import { Vue, Component } from "vue-property-decorator";
 import CustomInput from "@/components/CustomInput.vue";
 import CustomButton from "@/components/CustomButton.vue";
+import { namespace } from "vuex-class";
+import { ContactActions } from "@/types/types";
+
+const contacts = namespace("Contacts");
 
 @Component({
   components: {
@@ -66,6 +70,9 @@ export default class CreateRoom extends Vue {
   emailError = "";
   name = "";
   nameError = "";
+
+  @contacts.Action(ContactActions.CREATE_GROUP)
+  public createGroup!: (groupName: string) => void;
 
   clearForm(): void {
     this.name = "";
@@ -104,7 +111,9 @@ export default class CreateRoom extends Vue {
   }
 
   buttonAction(): void {
-    console.log("Hello");
+    if (this.createGroupTab) {
+      this.createGroup(this.name);
+    }
   }
 }
 </script>

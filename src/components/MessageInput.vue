@@ -56,13 +56,12 @@
 <script lang="ts">
 import { VEmojiPicker } from "v-emoji-picker";
 import { Emoji } from "v-emoji-picker/lib/models/Emoji";
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { ChatActions, SocketActions } from "@/types/types";
-import { io } from "socket.io-client";
 
-const socket = namespace("Socket");
 const chat = namespace("Chat");
+const socket = namespace("Socket");
 
 @Component({
   components: {
@@ -76,12 +75,16 @@ export default class MessageInput extends Vue {
   socket: any = null;
 
   @Prop({ default: "" }) messageId!: string;
+  @Prop({ default: "" }) roomId!: string;
 
   @socket.Action(SocketActions.STARTED_TYPING)
   public userTyping!: (id: string) => void;
 
-  @socket.Action(SocketActions.SEND_MESSAGE)
-  public sendMessageToServer!: (message: string) => void;
+  @chat.Action(ChatActions.SEND_MESSAGE)
+  public sendMessageToServer!: (payLoad: {
+    message: string;
+    roomId: string;
+  }) => void;
 
   messageTyping(): void {
     console.log("typing...");
@@ -115,7 +118,7 @@ export default class MessageInput extends Vue {
   }
 
   async sendMessage(): Promise<void> {
-    this.sendMessageToServer(this.message);
+    this.sendMessageToServer({ message: this.message, roomId: this.roomId });
     if (this.message) {
       this.message = "";
       this.showEmojies = false;
@@ -123,8 +126,7 @@ export default class MessageInput extends Vue {
   }
 
   created(): void {
-    // const host = `localhost:3000`;
-    // this.socket = io(host, { transports: ["websocket"] });
+    //
   }
 }
 </script>

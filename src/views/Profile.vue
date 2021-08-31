@@ -47,7 +47,7 @@ export default class Profile extends Vue {
     border-radius: 50%;
     overflow: hidden;
     background-size: cover;
-    background: red;
+    background: rgb(175, 174, 174);
 
     .camera-icon {
       display: none;

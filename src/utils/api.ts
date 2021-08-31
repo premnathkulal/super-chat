@@ -10,4 +10,10 @@ const sendGroupChat = (id: string, msg: string): Promise<AxiosResponse> => {
   return axios.post(`${BASE_URL}chat/chat-group/${id}`, { data: msg });
 };
 
-export { fetchGroupChat, sendGroupChat };
+const createGroup = (groupName: string): Promise<AxiosResponse> => {
+  return axios.post(`${BASE_URL}chat/create-group`, {
+    data: groupName,
+  });
+};
+
+export { fetchGroupChat, sendGroupChat, createGroup };

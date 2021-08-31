@@ -1,40 +1,31 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
 import { ContactActions, ContactMutations } from "@/types/types";
+import { connectionSocket } from "..";
 
 @Module({ namespaced: true })
 class Contacts extends VuexModule {
-  // public contactList: ContactList[] = [];
-  public isLoggedIn = false;
-  public uid: string | null = null;
+  groupList = [];
 
   @Mutation
-  public async [ContactMutations.LOAD_CONTACTS](): Promise<void> {
-    //
+  public [ContactMutations.GROUP_CREATED](groupList: any): void {
+    console.log(groupList);
+
+    this.groupList = groupList;
   }
 
   @Action
-  [ContactActions.LOAD_CONTACTS](): void {
-    this.context.commit(ContactMutations.LOAD_CONTACTS);
-  }
-
-  // @Mutation
-  // public [ContactMutations.ADD_CONTACT](contacts: { email: string }): void {
-  //   //
-  // }
-
-  @Action
-  [ContactActions.ADD_CONTACT](contacts: { email: string }): void {
-    this.context.commit(ContactMutations.ADD_CONTACT, contacts);
-  }
-
-  @Mutation
-  public [ContactMutations.SET_USER_ID](uid: string): void {
-    this.uid = uid;
+  public [ContactActions.GROUP_CREATED](groupList: any): void {
+    this.context.commit(ContactMutations.GROUP_CREATED, groupList);
   }
 
   @Action
-  [ContactActions.SET_USER_ID](uid: string | null): void {
-    this.context.commit(ContactMutations.SET_USER_ID, uid);
+  public async [ContactActions.CREATE_GROUP](groupName: string): Promise<void> {
+    // createGroup(groupName);
+    const data = await connectionSocket.createGroup(groupName);
+  }
+
+  get group(): any {
+    return this.groupList;
   }
 }
 export default Contacts;

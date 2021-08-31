@@ -40,6 +40,7 @@ export default class Message extends Vue {
     });
     const el = this.$refs.chatMessage as Element;
     el.innerHTML = this.parsedMessage;
+    this.$emit("windowScroll");
   }
 
   get favicon(): string {
