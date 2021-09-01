@@ -1,12 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
-
-export class CreateGroupResponse {
-  @ApiProperty()
-  public response: string;
-
-  @ApiProperty()
-  public statusCode: number;
-}
 
 export class CreateGroupInput {
   @ApiProperty({ required: true })
@@ -17,4 +10,15 @@ export class CreateGroupInput {
 
   @ApiProperty({ required: true, isArray: true })
   public groupOwners: string[];
+}
+
+export class CreateGroupResponse {
+  @ApiProperty()
+  public status: HttpStatus;
+
+  @ApiProperty()
+  public response: string;
+
+  @ApiProperty()
+  public data: CreateGroupInput | CreateGroupInput[];
 }

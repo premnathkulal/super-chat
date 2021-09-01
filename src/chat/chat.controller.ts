@@ -23,12 +23,6 @@ export class ChatController {
     return { status: HttpStatus.OK, data };
   }
 
-  @Post('/create-group')
-  async createGroup(@Body() data: { data: string }): Promise<any> {
-    const result = await this.chatServices.createGroup(data.data);
-    return result;
-  }
-
   // @Post('chat-group/:id')
   // async userTyping(@Param('id') id: string): Promise<any> {
   //   return {

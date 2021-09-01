@@ -207,8 +207,6 @@ export class ChatService {
     },
   ];
 
-  group: any = [];
-
   async findChatGroup(id: string): Promise<any> {
     const result = this.groupChat;
     return result;
@@ -226,15 +224,6 @@ export class ChatService {
     return {
       status: HttpStatus.OK,
       data: this.groupChat,
-    };
-  }
-
-  async createGroup(groupName: string): Promise<any> {
-    await this.group.push(groupName);
-    return {
-      status: HttpStatus.CREATED,
-      message: 'Created',
-      data: this.group,
     };
   }
 

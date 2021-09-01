@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateGroupResponse, CreateGroupInput } from './dto/create-group.dto';
@@ -19,9 +19,21 @@ export class GroupService {
 
     const newGroup = new this.groupModule(groupDetails);
     const result = await newGroup.save();
+
     return {
+      status: HttpStatus.CREATED,
       response: 'created',
-      statusCode: 201,
+      data: result,
+    };
+  }
+
+  async getAllGroups(): Promise<CreateGroupResponse> {
+    const result = await this.groupModule.find().exec();
+
+    return {
+      status: HttpStatus.CREATED,
+      response: 'created',
+      data: result,
     };
   }
 
