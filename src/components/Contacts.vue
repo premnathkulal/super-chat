@@ -7,9 +7,9 @@
       </div>
     </div>
     <div class="contact-list">
-      <template v-for="(i, index) in 4">
+      <!-- <template v-for="(i, index) in 4">
         <div
-          :key="index"
+          :key="`${index}-${i}`"
           v-if="tabType === 'all' || tabType === 'personal'"
           class="contact-info"
           @click="enterChat(`Name ${i}`)"
@@ -24,21 +24,21 @@
             <div class="msg-status">Navin: Good Evening</div>
           </div>
         </div>
-      </template>
-      <template v-for="(item, index) in group">
+      </template> -->
+      <template v-for="item in group">
         <div
-          :key="index"
+          :key="item._id"
           v-if="tabType === 'all' || tabType === 'group'"
           class="contact-info"
           @click="enterChat(item)"
         >
           <img
             class="profile-pic"
-            :src="`https://avatars.dicebear.com/api/avataaars/${item}.svg`"
+            :src="`https://avatars.dicebear.com/api/avataaars/${item._id}.svg`"
             alt="user-img"
           />
           <div class="contact-details">
-            <div class="name">{{ item }}</div>
+            <div class="name">{{ item.groupName }}</div>
             <div class="msg-status">Vidya: Nothing!!!</div>
           </div>
         </div>
@@ -59,7 +59,11 @@ const socket = namespace("Socket");
 export default class Contacts extends Vue {
   @Prop({ default: "all" }) tabType!: string;
 
-  roomId = "";
+  groupInfo: { _id: string; groupName: string; groupOwners: string[] } = {
+    _id: "",
+    groupName: "",
+    groupOwners: [],
+  };
 
   @contacts.Getter
   group!: any;
@@ -74,18 +78,22 @@ export default class Contacts extends Vue {
     this.leaveRoom(data);
   }
 
-  enterChat(item: string): void {
-    if (this.roomId) {
+  enterChat(data: {
+    _id: string;
+    groupName: string;
+    groupOwners: string[];
+  }): void {
+    if (this.groupInfo) {
       this.leaveChat({
         userInfo: "",
-        room: this.roomId,
+        room: this.groupInfo._id,
       });
     }
-    this.roomId = item;
-    this.$emit("loadMessage", item);
+    this.groupInfo = data;
+    this.$emit("loadMessage", data);
     this.joinRoom({
       userInfo: "",
-      room: item,
+      room: data._id,
     });
   }
 }

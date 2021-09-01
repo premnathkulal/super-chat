@@ -75,7 +75,11 @@ export default class MessageInput extends Vue {
   socket: any = null;
 
   @Prop({ default: "" }) messageId!: string;
-  @Prop({ default: "" }) roomId!: string;
+  @Prop({ default: "" }) groupInfo!: {
+    _id: string;
+    groupName: string;
+    groupOwners: string[];
+  };
 
   @socket.Action(SocketActions.STARTED_TYPING)
   public userTyping!: (id: string) => void;
@@ -118,7 +122,10 @@ export default class MessageInput extends Vue {
   }
 
   async sendMessage(): Promise<void> {
-    this.sendMessageToServer({ message: this.message, roomId: this.roomId });
+    this.sendMessageToServer({
+      message: this.message,
+      roomId: this.groupInfo._id,
+    });
     if (this.message) {
       this.message = "";
       this.showEmojies = false;

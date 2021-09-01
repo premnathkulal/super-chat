@@ -21,11 +21,11 @@
           v-if="homePage"
           :tabType="tabType"
           :showMenuIcon="smallDevice"
-          :roomId="roomId"
+          :groupInfo="groupInfo"
           @toggleDrawer="toggleDrawer()"
         />
         <router-view class="router-view" />
-        <message-input v-if="homePage" :roomId="roomId" />
+        <message-input v-if="homePage" :groupInfo="groupInfo" />
       </div>
       <router-view v-else-if="!homePage" class="router-view" />
     </div>
@@ -41,8 +41,9 @@ import TopBar from "@/components/TopBar.vue";
 import MessageInput from "@/components/MessageInput.vue";
 import router from "./router";
 import { namespace } from "vuex-class";
-import { SocketActions } from "./types/types";
+import { ContactActions, SocketActions } from "./types/types";
 
+const contacts = namespace("Contacts");
 const socket = namespace("Socket");
 
 @Component({
@@ -63,10 +64,13 @@ export default class ChatApp extends Vue {
   messageText = "";
   chatTabType = "all";
   tabType = "all";
-  roomId = "";
+  groupInfo = "";
 
   @socket.Action(SocketActions.CONNECTION)
   public connectToSocket!: () => void;
+
+  @contacts.Action(ContactActions.LOAD_GROUP)
+  public loadAllGroups!: () => void;
 
   @Watch("window.innerWidth")
   changedWidth(): void {
@@ -94,7 +98,7 @@ export default class ChatApp extends Vue {
   }
 
   loadMessage(roomName: string): void {
-    this.roomId = roomName;
+    this.groupInfo = roomName;
     this.openDrawer = false;
   }
 
@@ -118,6 +122,7 @@ export default class ChatApp extends Vue {
     this.changedWidth();
     window.addEventListener("resize", this.changedWidth);
     this.connectToSocket();
+    this.loadAllGroups();
   }
 }
 </script>

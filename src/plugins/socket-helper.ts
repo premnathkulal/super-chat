@@ -42,9 +42,12 @@ export default class SocketHelper {
     );
   };
 
-  public createGroup = async (groupName: string): Promise<void> => {
+  public createGroup = async (data: {
+    groupName: string;
+    groupOwners: string[];
+  }): Promise<void> => {
     // room: string
-    this.socket.emit("create-group", groupName);
+    this.socket.emit("create-group", data);
     this.socket.on("group-list", async (data: any) => {
       store.dispatch(`Contacts/${ContactActions.GROUP_CREATED}`, data.data);
     });

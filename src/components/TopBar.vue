@@ -8,9 +8,13 @@
       >
         <font-awesome-icon icon="chevron-left" />
       </div>
-      <div class="top-bar-content user-image">P</div>
+      <img
+        class="top-bar-content user-image"
+        :src="`https://avatars.dicebear.com/api/avataaars/${groupInfo}.svg`"
+        alt="user-img"
+      />
       <div class="top-bar-content user-info">
-        <div class="user-name">{{ roomId }}</div>
+        <div class="user-name">{{ groupInfo.groupName }}</div>
         <div class="typing-status">Typing...</div>
       </div>
     </div>
@@ -29,7 +33,11 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 export default class TopBar extends Vue {
   @Prop({ default: false }) showMenuIcon!: boolean;
   @Prop({ default: "all" }) tabType!: string;
-  @Prop({ default: "" }) roomId!: string;
+  @Prop({ default: "" }) groupInfo!: {
+    _id: string;
+    groupName: string;
+    groupOwners: string[];
+  };
 }
 </script>
 

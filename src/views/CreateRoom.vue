@@ -72,7 +72,10 @@ export default class CreateRoom extends Vue {
   nameError = "";
 
   @contacts.Action(ContactActions.CREATE_GROUP)
-  public createGroup!: (groupName: string) => void;
+  public createGroup!: (data: {
+    groupName: string;
+    groupOwners: string[];
+  }) => void;
 
   clearForm(): void {
     this.name = "";
@@ -112,7 +115,7 @@ export default class CreateRoom extends Vue {
 
   buttonAction(): void {
     if (this.createGroupTab) {
-      this.createGroup(this.name);
+      this.createGroup({ groupName: this.name, groupOwners: ["navin123"] });
     }
   }
 }
