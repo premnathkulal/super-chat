@@ -5,32 +5,12 @@ import { ChatService } from './chat.service';
 export class ChatController {
   constructor(private readonly chatServices: ChatService) {}
 
-  @Get('/chat-group/:id')
+  @Get('/load-chat/:id')
   async findChatGroup(@Param('id') id: string): Promise<any> {
-    const data = await this.chatServices.findChatGroup(id);
+    const data = await this.chatServices.loadChat(id);
     return {
       status: HttpStatus.OK,
       data,
     };
   }
-
-  @Post('/chat-group/:id')
-  async chatGroup(
-    @Param('id') id: string,
-    @Body() data: { data: string },
-  ): Promise<any> {
-    // const result = this.chatServices.sendChatGroup(id, data.data);
-    return { status: HttpStatus.OK, data };
-  }
-
-  // @Post('chat-group/:id')
-  // async userTyping(@Param('id') id: string): Promise<any> {
-  //   return {
-  //     status: HttpStatus.OK,
-  //     data: {
-  //       name: 'Premnath',
-  //       msg: 'Hello',
-  //     },
-  //   };
-  // }
 }

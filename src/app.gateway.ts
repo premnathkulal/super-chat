@@ -48,13 +48,13 @@ export class AppGateway
     client.emit('leave-room-response', `Leaved from ${payload.room}`);
   }
 
-  @SubscribeMessage('chat-group-server')
+  @SubscribeMessage('send-message-server')
   async handleMessage(
     client: Socket,
     payload: { message: string; sender: string; room: string },
   ): Promise<void> {
     const result = await this.chatServices.sendChatGroup(payload);
-    this.wss.to(payload.room).emit('chat-group-client', result.data);
+    this.wss.to(payload.room).emit('send-message-client', payload);
   }
 
   @SubscribeMessage('create-group')
