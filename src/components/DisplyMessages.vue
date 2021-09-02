@@ -1,28 +1,28 @@
 <template>
   <div class="display-message" ref="scrollToMe">
-    <template v-if="personal[0]">
+    <template v-if="chatMessages.length">
       <div
-        v-for="(msg, index) in personal[0].messages"
-        :key="index"
-        :class="'navin123' === msg.from ? 'my-message' : ''"
+        v-for="(msg, index) in chatMessages"
+        :key="`${index}-${chatId}`"
+        :class="'navin123' === msg.sender ? 'my-message' : ''"
         class="message"
       >
-        <div class="user-pic" v-if="index < personal[0].messages.length">
+        <div class="user-pic" v-if="index < chatMessages.length">
           <div
             v-if="
-              index + 1 === personal[0].messages.length ||
-              msg.from !== personal[0].messages[index + 1].from
+              index + 1 === chatMessages.length ||
+              msg.sender !== chatMessages[index + 1].sender
             "
           >
             <img
               class="img"
-              :src="`https://avatars.dicebear.com/api/avataaars/${msg.from}.svg`"
+              :src="`https://avatars.dicebear.com/api/avataaars/${msg.sender}.svg`"
               alt="user-img"
             />
           </div>
         </div>
         <div class="message-contents">
-          <!-- <div class="user-name">{{ msg.from }}</div> -->
+          <div class="user-name">{{ msg.sender }}</div>
           <message :message="msg.message" @windowScroll="windowScroll" />
           <div class="time">{{ "10:00AM" }}</div>
         </div>
@@ -47,7 +47,8 @@ const socket = namespace("Socket");
   },
 })
 export default class DisplyMessages extends Vue {
-  personal = [];
+  chatMessages: any = [];
+  chatId = "";
 
   @chat.Getter
   isLoading!: boolean;
@@ -71,7 +72,10 @@ export default class DisplyMessages extends Vue {
 
   @Watch("chatData")
   setMessages(): void {
-    this.personal = this.chatData;
+    this.chatMessages = [];
+    this.chatMessages.push(...this.chatData.messages);
+    this.chatId = this.chatData.roomId;
+    console.log(this.chatData.roomId);
   }
 
   mounted(): void {
@@ -79,12 +83,11 @@ export default class DisplyMessages extends Vue {
   }
 
   created(): void {
-    this.loadChatData("navin123");
     // const host = `localhost:3000`;
     // const socket = io(host, { transports: ["websocket"] });
     // socket.on("messageToClient", (data: any) => {
     //   new Promise((resolve, reject) => {
-    //     this.personal = data.data;
+    //     this.chatContent = data.data;
     //     resolve("done");
     //   }).then(() => {
     //     this.windowScroll();

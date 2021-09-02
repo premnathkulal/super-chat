@@ -41,10 +41,11 @@ import TopBar from "@/components/TopBar.vue";
 import MessageInput from "@/components/MessageInput.vue";
 import router from "./router";
 import { namespace } from "vuex-class";
-import { ContactActions, SocketActions } from "./types/types";
+import { ChatActions, ContactActions, SocketActions } from "./types/types";
 
 const contacts = namespace("Contacts");
 const socket = namespace("Socket");
+const chat = namespace("Chat");
 
 @Component({
   components: {
@@ -64,13 +65,16 @@ export default class ChatApp extends Vue {
   messageText = "";
   chatTabType = "all";
   tabType = "all";
-  groupInfo = "";
+  groupInfo = {};
 
   @socket.Action(SocketActions.CONNECTION)
   public connectToSocket!: () => void;
 
   @contacts.Action(ContactActions.LOAD_GROUP)
   public loadAllGroups!: () => void;
+
+  @chat.Action(ChatActions.LOAD_CHAT)
+  public loadChats!: (id: string) => void;
 
   @Watch("window.innerWidth")
   changedWidth(): void {
@@ -97,8 +101,13 @@ export default class ChatApp extends Vue {
     //
   }
 
-  loadMessage(roomName: string): void {
-    this.groupInfo = roomName;
+  loadMessage(groupInfo: {
+    _id: string;
+    groupName: string;
+    groupOwners: string[];
+  }): void {
+    this.loadChats(groupInfo._id);
+    this.groupInfo = groupInfo;
     this.openDrawer = false;
   }
 

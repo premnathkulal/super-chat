@@ -5,7 +5,7 @@ import { connectionSocket } from "..";
 
 @Module({ namespaced: true })
 class Chat extends VuexModule {
-  public chatContent: any[] = [];
+  public chatContent: any = {};
   public loading = false;
   public uid: string | null = null;
 
@@ -34,9 +34,12 @@ class Chat extends VuexModule {
   }
 
   @Mutation
-  public [ChatMutations.RECEIVE_MESSAGE](data: any): void {
-    // console.log(data);
-    this.chatContent = data;
+  public async [ChatMutations.RECEIVE_MESSAGE](data: any): Promise<void> {
+    console.log(data);
+    const chatData: any = { ...this.chatContent };
+    await chatData.messages.push(data);
+    this.chatContent = chatData;
+    console.log(this.chatContent);
   }
 
   @Action

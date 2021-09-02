@@ -29,13 +29,13 @@ export default class SocketHelper {
     room: string;
     from: string;
   }): Promise<void> => {
-    this.socket.emit("chat-group-server", {
+    this.socket.emit("send-message-server", {
       message: payload.message,
       sender: payload.from,
       room: payload.room,
     });
     this.socket.on(
-      "chat-group-client",
+      "send-message-client",
       (data: { message: string; sender: string; room: string }) => {
         store.dispatch(`Chat/${ChatActions.RECEIVE_MESSAGE}`, data);
       }
@@ -46,7 +46,6 @@ export default class SocketHelper {
     groupName: string;
     groupOwners: string[];
   }): Promise<void> => {
-    // room: string
     this.socket.emit("create-group", data);
     this.socket.on("group-list", async (data: any) => {
       store.dispatch(`Contacts/${ContactActions.GROUP_CREATED}`, data.data);
