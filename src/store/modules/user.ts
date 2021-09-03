@@ -1,68 +1,89 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
 import { UserActions, UserMutations } from "@/types/types";
+import { login, register } from "@/utils/api";
+import { AxiosError, AxiosResponse } from "axios";
 
 @Module({ namespaced: true })
 class User extends VuexModule {
   public isLoggedIn = false;
-  public uidEmail: { uid: string; email: string } = {
-    uid: "",
-    email: "",
-  };
-  public downloadUrl: string | null = "";
-  public messageDisplayUserId = "";
-  public picUrl = "";
+  public isLoading = false;
+  public registerErrorMessage = "";
+  public loginErrorMessage = "";
 
   @Mutation
-  public [UserMutations.GET_USER_PIC](picUrl: string): void {
-    this.picUrl = picUrl;
-  }
-
-  // @Action
-  // [UserActions.GET_USER_PIC](email: string): void {
-  //   //
-  // }
-
-  // @Mutation
-  // public [UserMutations.SET_USER_PIC](downloadUrl: string): void {
-  //   //
-  // }
-
-  @Action
-  [UserActions.SET_USER_PIC](downloadUrl: string): void {
-    this.context.commit(UserMutations.SET_USER_PIC, downloadUrl);
-  }
-
-  @Mutation
-  public [UserMutations.SET_USER_ID_EMAIL](uidEmail: {
-    uid: string;
-    email: string;
-  }): void {
-    this.uidEmail = uidEmail;
+  public [UserMutations.SET_LOADING](): void {
+    this.isLoading = !this.isLoading;
   }
 
   @Action
-  [UserActions.SET_USER_ID_EMAIL](
-    uidEmail: { uid: string; email: string } | null
-  ): void {
-    this.context.commit(UserMutations.SET_USER_ID_EMAIL, uidEmail);
+  [UserActions.SET_LOADING](): void {
+    this.context.commit(UserMutations.SET_LOADING);
   }
 
   @Mutation
-  public ["prem_m"](userId: string): void {
-    this.messageDisplayUserId = userId;
+  public [UserMutations.REGISTER_ERROR](error: string): void {
+    this.registerErrorMessage = error;
+    this.loginErrorMessage = "";
+  }
+
+  @Mutation
+  public [UserMutations.REGISTER](result: any): void {
+    //
   }
 
   @Action
-  ["prem_a"](userId: string): void {
-    this.context.commit("prem_m", userId);
+  [UserActions.REGISTER](userDetails: any): void {
+    this.context.commit(UserMutations.SET_LOADING);
+    this.context.commit(UserMutations.REGISTER_ERROR, "");
+
+    register(userDetails)
+      .then((result: any) => {
+        this.context.commit(UserMutations.REGISTER, result);
+      })
+      .catch((error: AxiosError) => {
+        const errorMsg = error.response?.data.message;
+        this.context.commit(UserMutations.REGISTER_ERROR, errorMsg);
+      })
+      .finally(() => {
+        this.context.commit(UserMutations.SET_LOADING);
+      });
   }
 
-  get getUserId(): string {
-    return this.messageDisplayUserId;
+  @Mutation
+  public [UserMutations.LOGIN_ERROR](error: string): void {
+    this.loginErrorMessage = error;
+    this.registerErrorMessage = "";
   }
 
-  get getProfilePic(): string {
-    return this.picUrl;
+  @Mutation
+  public [UserMutations.LOGIN](result: any): void {
+    //
+  }
+
+  @Action
+  [UserActions.LOGIN](credentials: any): void {
+    this.context.commit(UserMutations.SET_LOADING);
+    this.context.commit(UserMutations.LOGIN_ERROR, "");
+    login(credentials)
+      .then((result: any) => {
+        this.context.commit(UserMutations.LOGIN, result);
+        this.context.commit(UserMutations.SET_LOADING);
+      })
+      .catch((error: AxiosError) => {
+        const errorMsg = error.response?.data.message;
+        this.context.commit(UserMutations.LOGIN_ERROR, errorMsg);
+      })
+      .finally(() => {
+        this.context.commit(UserMutations.SET_LOADING);
+      });
+  }
+
+  get loginError(): string {
+    return this.loginErrorMessage;
+  }
+
+  get registerError(): string {
+    return this.registerErrorMessage;
   }
 }
 export default User;

@@ -15,14 +15,31 @@ export default class SocketHelper {
   void => {
     // this.userDetails = userDetails;
     // const userDetailsJsonString = JSON.stringify(userDetails);
-    const host = `localhost:3000`;
+    const host = `localhost:3001`;
     this.socket = io(host, { transports: ["websocket"] }).connect();
-    // this.socket = io().connect();
-    // this.socket.emit("connected", `${userDetailsJsonString}`);
+    this.eventListeners();
+  };
+
+  public eventListeners(): void {
     // this.socket.on("welcomeMessage", (msg: string) => {
     //   this.onConnected(msg);
     // });
-  };
+    this.socket.on(
+      "send-message-client",
+      (data: { message: string; sender: string; room: string }) => {
+        store.dispatch(`Chat/${ChatActions.RECEIVE_MESSAGE}`, data);
+      }
+    );
+    this.socket.on("group-list", async (data: any) => {
+      store.dispatch(`Contacts/${ContactActions.GROUP_CREATED}`, data.data);
+    });
+    this.socket.on("join-room-response", async (data: any) => {
+      //
+    });
+    this.socket.on("leave-room-response", async (data: any) => {
+      //
+    });
+  }
 
   public sendMessage = async (payload: {
     message: string;
@@ -34,12 +51,6 @@ export default class SocketHelper {
       sender: payload.from,
       room: payload.room,
     });
-    this.socket.on(
-      "send-message-client",
-      (data: { message: string; sender: string; room: string }) => {
-        store.dispatch(`Chat/${ChatActions.RECEIVE_MESSAGE}`, data);
-      }
-    );
   };
 
   public createGroup = async (data: {
@@ -47,9 +58,6 @@ export default class SocketHelper {
     groupOwners: string[];
   }): Promise<void> => {
     this.socket.emit("create-group", data);
-    this.socket.on("group-list", async (data: any) => {
-      store.dispatch(`Contacts/${ContactActions.GROUP_CREATED}`, data.data);
-    });
   };
 
   public joinRoom = async (payload: {
@@ -57,9 +65,6 @@ export default class SocketHelper {
     room: string;
   }): Promise<void> => {
     this.socket.emit("join-room", payload);
-    this.socket.on("join-room-response", async (data: any) => {
-      // console.log(data);
-    });
   };
 
   public leaveRoom = async (payload: {
@@ -67,9 +72,6 @@ export default class SocketHelper {
     room: string;
   }): Promise<void> => {
     this.socket.emit("leave-room", payload);
-    this.socket.on("leave-room-response", async (data: any) => {
-      // console.log(data);
-    });
   };
 
   // public userTyping = (email: string): void => {

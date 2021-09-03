@@ -35,11 +35,9 @@ class Chat extends VuexModule {
 
   @Mutation
   public async [ChatMutations.RECEIVE_MESSAGE](data: any): Promise<void> {
-    console.log(data);
     const chatData: any = { ...this.chatContent };
     await chatData.messages.push(data);
     this.chatContent = chatData;
-    console.log(this.chatContent);
   }
 
   @Action

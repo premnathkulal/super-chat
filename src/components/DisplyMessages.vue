@@ -36,7 +36,6 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import Message from "@/components/Message.vue";
 import { namespace } from "vuex-class";
 import { ChatActions } from "@/types/types";
-// import { io } from "socket.io-client";
 
 const chat = namespace("Chat");
 const socket = namespace("Socket");
@@ -75,7 +74,6 @@ export default class DisplyMessages extends Vue {
     this.chatMessages = [];
     this.chatMessages.push(...this.chatData.messages);
     this.chatId = this.chatData.roomId;
-    console.log(this.chatData.roomId);
   }
 
   mounted(): void {

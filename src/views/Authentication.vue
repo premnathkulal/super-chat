@@ -26,7 +26,10 @@
             v-model="name"
             :errorMessage="nameError"
             @blurAction="validateName()"
-            @keypressAction="nameError = ''"
+            @keypressAction="
+              nameError = '';
+              errorMessage = '';
+            "
           />
           <custom-input
             class="input-component"
@@ -34,7 +37,10 @@
             v-model="email"
             :errorMessage="emailError"
             @blurAction="validateEmail()"
-            @keypressAction="emailError = ''"
+            @keypressAction="
+              emailError = '';
+              errorMessage = '';
+            "
           />
           <custom-input
             class="input-component"
@@ -42,11 +48,16 @@
             v-model="password"
             :errorMessage="passwordError"
             @blurAction="validatePassword()"
-            @keypressAction="passwordError = ''"
+            @keypressAction="
+              passwordError = '';
+              errorMessage = '';
+            "
           />
         </div>
+        <p class="error-message">{{ errorMessage }}</p>
         <custom-button
           :btnName="createAccountTab ? 'Register' : 'Login'"
+          :disableButton="disableButton()"
           @btnAction="buttonAction()"
         />
       </div>
@@ -55,9 +66,13 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import CustomInput from "@/components/CustomInput.vue";
 import CustomButton from "@/components/CustomButton.vue";
+import { namespace } from "vuex-class";
+import { UserActions } from "@/types/types";
+
+const user = namespace("User");
 
 @Component({
   components: {
@@ -74,6 +89,31 @@ export default class Authentication extends Vue {
   passwordError = "";
   register = false;
   createAccountTab = false;
+  errorMessage = "";
+
+  @user.Getter
+  public loginError!: (userDetails: any) => any;
+
+  @user.Getter
+  public registerError!: (userDetails: any) => any;
+
+  @user.Action(UserActions.REGISTER)
+  public registerUser!: (userDetails: any) => any;
+
+  @user.Action(UserActions.LOGIN)
+  public loginUser!: (credentials: any) => any;
+
+  @Watch("loginError")
+  @Watch("registerError")
+  watch(): void {
+    if (this.loginError) {
+      this.errorMessage = this.loginError as unknown as string;
+    } else if (this.registerError) {
+      this.errorMessage = this.registerError as unknown as string;
+    } else {
+      this.createAccountTab = false;
+    }
+  }
 
   validateName(): void {
     this.emailError = "";
@@ -98,13 +138,9 @@ export default class Authentication extends Vue {
     this.passwordError = "";
     if (!this.password) {
       this.passwordError = "This field is Required";
-    } else if (this.password.length < 8) {
+    } else if (this.password.length < 2) {
       this.passwordError = "Password length should be greater than 8";
     }
-  }
-
-  disableButton(): boolean {
-    return !!this.emailError || !!this.passwordError;
   }
 
   clearForm(): void {
@@ -114,15 +150,44 @@ export default class Authentication extends Vue {
     this.nameError = "";
     this.emailError = "";
     this.passwordError = "";
+    this.errorMessage = "";
   }
 
   loginRegisterToggle(): void {
-    this.clearForm();
     this.createAccountTab = !this.createAccountTab;
+    this.clearForm();
   }
 
   buttonAction(): void {
-    console.log("Hello");
+    if (this.createAccountTab) {
+      this.registerUser({
+        name: this.name,
+        email: this.email,
+        password: this.password,
+      });
+    } else {
+      this.loginUser({
+        username: this.email,
+        password: this.password,
+      });
+    }
+  }
+
+  @Watch("name")
+  @Watch("email")
+  @Watch("password")
+  disableButton(): boolean {
+    const isErrorMessage =
+      !!this.nameError || !!this.emailError || !!this.passwordError;
+    let isError = !this.email || !this.password;
+    if (this.createAccountTab) {
+      isError = isError || !this.name;
+    }
+    return isErrorMessage || isError;
+  }
+
+  created(): void {
+    this.disableButton();
   }
 }
 </script>
@@ -182,6 +247,12 @@ export default class Authentication extends Vue {
         .input-component {
           margin-bottom: 1rem;
         }
+      }
+
+      .error-message {
+        color: red;
+        text-align: center;
+        padding: 0 0 0.8rem 0;
       }
     }
   }
