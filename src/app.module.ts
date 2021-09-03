@@ -16,6 +16,7 @@ import { GroupModule } from './groups/groups.module';
     MongooseModule.forRoot(
       'mongodb+srv://premnathkulal1998:1Wtfp26D9xAfSQnX@cluster0.wfsyt.mongodb.net/super-chat?retryWrites=true&w=majority',
     ),
+    ConfigModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway],
