@@ -4,7 +4,7 @@
       <div
         v-for="(msg, index) in chatMessages"
         :key="`${index}-${chatId}`"
-        :class="'navin123' === msg.sender ? 'my-message' : ''"
+        :class="userInfo.email === msg.sender ? 'my-message' : ''"
         class="message"
       >
         <div class="user-pic" v-if="index < chatMessages.length">
@@ -38,7 +38,7 @@ import { namespace } from "vuex-class";
 import { ChatActions } from "@/types/types";
 
 const chat = namespace("Chat");
-const socket = namespace("Socket");
+const user = namespace("User");
 
 @Component({
   components: {
@@ -48,6 +48,9 @@ const socket = namespace("Socket");
 export default class DisplyMessages extends Vue {
   chatMessages: any = [];
   chatId = "";
+
+  @user.Getter
+  public userInfo!: any;
 
   @chat.Getter
   isLoading!: boolean;

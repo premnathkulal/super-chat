@@ -62,6 +62,7 @@ import { ChatActions, SocketActions } from "@/types/types";
 
 const chat = namespace("Chat");
 const socket = namespace("Socket");
+const user = namespace("User");
 
 @Component({
   components: {
@@ -73,6 +74,9 @@ export default class MessageInput extends Vue {
   message = "";
   curPos = 0;
   socket: any = null;
+
+  @user.Getter
+  public userInfo!: any;
 
   @Prop({ default: "" }) messageId!: string;
   @Prop({ default: "" }) groupInfo!: {
@@ -88,6 +92,7 @@ export default class MessageInput extends Vue {
   public sendMessageToServer!: (payLoad: {
     message: string;
     roomId: string;
+    sender: string;
   }) => void;
 
   messageTyping(): void {
@@ -125,6 +130,7 @@ export default class MessageInput extends Vue {
     this.sendMessageToServer({
       message: this.message,
       roomId: this.groupInfo._id,
+      sender: this.userInfo.email,
     });
     if (this.message) {
       this.message = "";

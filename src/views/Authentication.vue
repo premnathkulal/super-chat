@@ -71,6 +71,7 @@ import CustomInput from "@/components/CustomInput.vue";
 import CustomButton from "@/components/CustomButton.vue";
 import { namespace } from "vuex-class";
 import { UserActions } from "@/types/types";
+import router from "@/router";
 
 const user = namespace("User");
 
@@ -92,7 +93,10 @@ export default class Authentication extends Vue {
   errorMessage = "";
 
   @user.Getter
-  public loginError!: (userDetails: any) => any;
+  public isLoginSuccess!: boolean;
+
+  @user.Getter
+  public loginError!: any;
 
   @user.Getter
   public registerError!: (userDetails: any) => any;
@@ -102,6 +106,11 @@ export default class Authentication extends Vue {
 
   @user.Action(UserActions.LOGIN)
   public loginUser!: (credentials: any) => any;
+
+  @Watch("isLoginSuccess")
+  loginSuccess(): void {
+    router.push({ name: "Home" });
+  }
 
   @Watch("loginError")
   @Watch("registerError")

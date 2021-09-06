@@ -14,19 +14,41 @@
     </div>
 
     <div class="user-info">
-      <div class="name">Navin Kumar</div>
-      <div class="user-name">navin123</div>
-      <div class="button">Logout</div>
+      <div class="name">{{ userInfo.name }}</div>
+      <div class="user-name">{{ userInfo.email }}</div>
+      <!-- <div class="button">Logout</div> -->
+      <custom-button btnName="Logout" @btnAction="userLogout()" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import router from "@/router";
+import { UserActions } from "@/types/types";
 import { Vue, Component } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+import CustomButton from "@/components/CustomButton.vue";
 
-@Component
+const user = namespace("User");
+
+@Component({
+  components: {
+    CustomButton,
+  },
+})
 export default class Profile extends Vue {
   userPicUrl = "https://avatars.dicebear.com/api/avataaars/navin123.svg";
+
+  @user.Getter
+  public userInfo!: any;
+
+  @user.Action(UserActions.LOGOUT)
+  public logout!: () => void;
+
+  async userLogout(): Promise<void> {
+    await this.logout();
+    router.push({ name: "Auth" });
+  }
 }
 </script>
 
@@ -83,13 +105,7 @@ export default class Profile extends Vue {
     .name {
     }
     .user-name {
-    }
-    .button {
-      margin-top: 1rem;
-      background: #30224b;
-      font-size: 1.1rem;
-      color: white;
-      cursor: pointer;
+      padding-bottom: 0.5rem;
     }
   }
 }

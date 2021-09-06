@@ -53,6 +53,8 @@ export const UserMutations = {
   REGISTER_ERROR: "REGISTER_ERROR_MUTATIONS",
   LOGIN: "LOGIN_MUTATIONS",
   LOGIN_ERROR: "LOGIN_ERROR_MUTATIONS",
+  LOGOUT: "LOGOUT_MUTATIONS",
+  IS_LOGGED_IN: "IS_LOGGED_IN_MUTATIONS",
 };
 
 export const UserActions = {
@@ -64,6 +66,8 @@ export const UserActions = {
   GET_USER_PIC: "GET_USER_PIC_ACTIONS",
   LOGIN: "LOGIN_ACTIONS",
   REGISTER: "REGISTER_ACTIONS",
+  IS_LOGGED_IN: "IS_LOGGED_IN_ACTIONS",
+  LOGOUT: "LOGOUT_ACTIONS",
 };
 
 export const ChatMutations = {

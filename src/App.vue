@@ -41,11 +41,17 @@ import TopBar from "@/components/TopBar.vue";
 import MessageInput from "@/components/MessageInput.vue";
 import router from "./router";
 import { namespace } from "vuex-class";
-import { ChatActions, ContactActions, SocketActions } from "./types/types";
+import {
+  ChatActions,
+  ContactActions,
+  SocketActions,
+  UserActions,
+} from "./types/types";
 
 const contacts = namespace("Contacts");
 const socket = namespace("Socket");
 const chat = namespace("Chat");
+const user = namespace("User");
 
 @Component({
   components: {
@@ -67,6 +73,15 @@ export default class ChatApp extends Vue {
   tabType = "all";
   groupInfo = {};
 
+  @user.Getter
+  public userToken!: string;
+
+  @user.Action(UserActions.IS_LOGGED_IN)
+  public isLoggedIn!: () => void;
+
+  @user.Action(UserActions.GET_USER_INFO)
+  public loadUserInfo!: () => void;
+
   @socket.Action(SocketActions.CONNECTION)
   public connectToSocket!: () => void;
 
@@ -75,6 +90,17 @@ export default class ChatApp extends Vue {
 
   @chat.Action(ChatActions.LOAD_CHAT)
   public loadChats!: (id: string) => void;
+
+  @Watch("userToken")
+  isUserLoggedIn(): void {
+    if (this.userToken) {
+      this.connectToSocket();
+      this.loadAllGroups();
+      this.loadUserInfo();
+      return;
+    }
+    router.push({ name: "Auth" });
+  }
 
   @Watch("window.innerWidth")
   changedWidth(): void {
@@ -127,11 +153,11 @@ export default class ChatApp extends Vue {
     }
   }
 
-  created(): void {
+  async created(): Promise<void> {
     this.changedWidth();
     window.addEventListener("resize", this.changedWidth);
-    this.connectToSocket();
-    this.loadAllGroups();
+    await this.isLoggedIn();
+    this.isUserLoggedIn();
   }
 }
 </script>

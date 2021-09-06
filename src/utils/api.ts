@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import axiosApi from "./axiosInterceptor";
 
 const BASE_URL = "http://localhost:3001/";
 
@@ -22,4 +23,8 @@ const login = (credentials: any): Promise<AxiosResponse> => {
   return axios.post(`${BASE_URL}auth/login`, credentials);
 };
 
-export { fetchGroupChat, sendGroupChat, loadGroup, register, login };
+const userInfo = (): Promise<AxiosResponse> => {
+  return axiosApi.get(`${BASE_URL}auth/user-info`);
+};
+
+export { fetchGroupChat, sendGroupChat, loadGroup, register, login, userInfo };

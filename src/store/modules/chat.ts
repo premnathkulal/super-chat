@@ -53,11 +53,12 @@ class Chat extends VuexModule {
   async [ChatActions.SEND_MESSAGE](payLoad: {
     message: string;
     roomId: string;
+    sender: string;
   }): Promise<void> {
     const data = await connectionSocket.sendMessage({
       message: payLoad.message,
       room: payLoad.roomId,
-      from: "navin123",
+      from: payLoad.sender,
     });
   }
 
