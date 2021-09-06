@@ -1,11 +1,17 @@
-import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+  Request,
+  Get,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { RegisterResponse } from './dto/register.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { RegisterInput } from './dto/register.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { UserDetails } from './dto/user-details.dto';
-
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 @ApiTags('Authentication APIs')
 @Controller('auth')
 export class UserController {
@@ -21,6 +27,12 @@ export class UserController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() userDetails: any): Promise<any> {
-    return await this.userService.loginUser(userDetails);
+    return await this.userService.loginUser(userDetails.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('user-info')
+  async userInfo(@Request() userDetails: any): Promise<any> {
+    return await this.userService.userInfo(userDetails.user);
   }
 }

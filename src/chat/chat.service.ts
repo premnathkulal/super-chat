@@ -55,7 +55,7 @@ export class ChatService {
     };
   }
 
-  async msgTyping(id: string): Promise<any> {
-    //
-  }
+  // async msgTyping(id: string): Promise<any> {
+  //
+  // }
 }

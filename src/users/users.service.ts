@@ -40,7 +40,7 @@ export class UsersService {
       email: userDetail.email,
       password: userDetail.password,
     });
-    const result = await newUser.save();
+    await newUser.save();
     return {
       response: 'created',
       statusCode: 201,
@@ -48,9 +48,11 @@ export class UsersService {
   }
 
   async validateUser(email: string, password: string): Promise<UserDetails> {
-    const user = await this.findUser(email);
+    const user: any = await this.findUser(email);
+
     if (user && user.password === password) {
-      const { id, email, name } = user;
+      const id = user._id;
+      const { email, name } = user;
       return { id, email, name };
     }
     return null;
@@ -62,9 +64,23 @@ export class UsersService {
       email: userDetails.email,
     };
     const access_token = await this.jwtService.sign(payload);
+
     return {
       status: HttpStatus.OK,
       token: access_token,
+    };
+  }
+
+  async userInfo(userDetails: any): Promise<any> {
+    const user: any = await this.findUser(userDetails.email);
+    const data = {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    };
+    return {
+      status: HttpStatus.OK,
+      data,
     };
   }
 

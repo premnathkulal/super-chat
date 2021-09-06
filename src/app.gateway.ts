@@ -25,11 +25,11 @@ export class AppGateway
   @WebSocketServer() wss: Server;
 
   afterInit(server: Server) {
-    this.logger.log('Initialized!');
+    this.logger.log(`${server} Initialized!`);
   }
 
   handleConnection(client: Socket, ...args: any[]) {
-    this.logger.log(`Client Connected : ${client.id}`);
+    this.logger.log(`Client Connected : ${client.id} ${args}`);
   }
 
   handleDisconnect(client: Socket) {
@@ -53,7 +53,8 @@ export class AppGateway
     client: Socket,
     payload: { message: string; sender: string; room: string },
   ): Promise<void> {
-    const result = await this.chatServices.sendChatGroup(payload);
+    this.logger.log(`${client.id} Client message action`);
+    await this.chatServices.sendChatGroup(payload);
     this.wss.to(payload.room).emit('send-message-client', payload);
   }
 
