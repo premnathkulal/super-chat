@@ -10,12 +10,17 @@
       </div>
       <img
         class="top-bar-content user-image"
-        :src="`https://avatars.dicebear.com/api/avataaars/${groupInfo}.svg`"
+        :src="`https://avatars.dicebear.com/api/avataaars/${groupInfo._id}.svg`"
         alt="user-img"
       />
       <div class="top-bar-content user-info">
         <div class="user-name">{{ groupInfo.groupName }}</div>
-        <div class="typing-status">Typing...</div>
+        <div
+          v-if="isUserTyping.name && groupInfo._id === isUserTyping.roomId"
+          class="typing-status"
+        >
+          {{ `${isUserTyping.name} is typing...` }}
+        </div>
       </div>
     </div>
     <font-awesome-icon
@@ -27,17 +32,23 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { namespace } from 'vuex-class';
+
+const socket = namespace('Socket');
 
 @Component
 export default class TopBar extends Vue {
   @Prop({ default: false }) showMenuIcon!: boolean;
-  @Prop({ default: "all" }) tabType!: string;
-  @Prop({ default: "" }) groupInfo!: {
+  @Prop({ default: 'all' }) tabType!: string;
+  @Prop({ default: '' }) groupInfo!: {
     _id: string;
     groupName: string;
     groupOwners: string[];
   };
+
+  @socket.Getter
+  public isUserTyping!: { name: string; roomId: string };
 }
 </script>
 

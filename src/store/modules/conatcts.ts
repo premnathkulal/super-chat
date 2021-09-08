@@ -1,8 +1,8 @@
-import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
-import { ContactActions, ContactMutations } from "@/types/types";
-import { connectionSocket } from "..";
-import { loadGroup } from "@/utils/api";
-import { AxiosResponse } from "axios";
+import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
+import { ContactActions, ContactMutations } from '@/types/types';
+import { connectionSocket } from '..';
+import { loadGroup } from '@/utils/api';
+import { AxiosResponse } from 'axios';
 
 @Module({ namespaced: true })
 class Contacts extends VuexModule {

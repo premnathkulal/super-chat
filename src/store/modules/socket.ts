@@ -1,11 +1,14 @@
-import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
-import { connectionSocket } from "@/store";
-import { SocketActions, SocketMutations } from "@/types/types";
+import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
+import { connectionSocket } from '@/store';
+import { SocketActions, SocketMutations } from '@/types/types';
 
 @Module({ namespaced: true })
 class Socket extends VuexModule {
-  public welcomeMessage = "";
-  public userTyping = "";
+  public welcomeMessage = '';
+  public userTyping: { name: string; roomId: string } = {
+    name: '',
+    roomId: '',
+  };
 
   public chatContent: any[] = [];
 
@@ -25,28 +28,31 @@ class Socket extends VuexModule {
     connectionSocket.leaveRoom(data);
   }
 
-  // @Action
-  // [SocketActions.STARTED_TYPING](email: string): void {
-  //   connectionSocket.userTyping(email);
-  // }
+  @Action
+  [SocketActions.STARTED_TYPING](data: { name: string; roomId: string }): void {
+    connectionSocket.userTyping(data);
+  }
 
-  // @Mutation
-  // public [SocketMutations.USER_TYPING](userData: string): void {
-  //   this.userTyping = userData;
-  // }
+  @Mutation
+  public [SocketMutations.USER_TYPING](userData: {
+    name: string;
+    roomId: string;
+  }): void {
+    this.userTyping = userData;
+  }
 
-  // @Action
-  // [SocketActions.USER_TYPING](userData: string): void {
-  //   this.context.commit(SocketMutations.USER_TYPING, userData);
-  // }
+  @Action
+  [SocketActions.USER_TYPING](userData: string): void {
+    this.context.commit(SocketMutations.USER_TYPING, userData);
+  }
 
   // get getWelcomeMessage(): string {
   //   return this.welcomeMessage;
   // }
 
-  // get getIsUserTyping(): string {
-  //   return this.userTyping;
-  // }
+  get isUserTyping(): { name: string; roomId: string } {
+    return this.userTyping;
+  }
 }
 
 export default Socket;

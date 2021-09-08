@@ -33,25 +33,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
-import ErrorPages from "@/components/ErrorPages.vue";
-import SideBarMenu from "@/components/SideBarMenu.vue";
-import Contacts from "@/components/Contacts.vue";
-import TopBar from "@/components/TopBar.vue";
-import MessageInput from "@/components/MessageInput.vue";
-import router from "./router";
-import { namespace } from "vuex-class";
+import { Component, Vue, Watch } from 'vue-property-decorator';
+import ErrorPages from '@/components/ErrorPages.vue';
+import SideBarMenu from '@/components/SideBarMenu.vue';
+import Contacts from '@/components/Contacts.vue';
+import TopBar from '@/components/TopBar.vue';
+import MessageInput from '@/components/MessageInput.vue';
+import router from './router';
+import { namespace } from 'vuex-class';
 import {
   ChatActions,
   ContactActions,
   SocketActions,
   UserActions,
-} from "./types/types";
+} from './types/types';
 
-const contacts = namespace("Contacts");
-const socket = namespace("Socket");
-const chat = namespace("Chat");
-const user = namespace("User");
+const contacts = namespace('Contacts');
+const socket = namespace('Socket');
+const chat = namespace('Chat');
+const user = namespace('User');
 
 @Component({
   components: {
@@ -65,12 +65,12 @@ const user = namespace("User");
 export default class ChatApp extends Vue {
   isOnline = false;
   homePage = true;
-  pageName = "";
+  pageName = '';
   smallDevice = false;
   openDrawer = true;
-  messageText = "";
-  chatTabType = "all";
-  tabType = "all";
+  messageText = '';
+  chatTabType = 'all';
+  tabType = 'all';
   groupInfo = {};
 
   @user.Getter
@@ -91,7 +91,7 @@ export default class ChatApp extends Vue {
   @chat.Action(ChatActions.LOAD_CHAT)
   public loadChats!: (id: string) => void;
 
-  @Watch("userToken")
+  @Watch('userToken')
   isUserLoggedIn(): void {
     if (this.userToken) {
       this.connectToSocket();
@@ -99,10 +99,10 @@ export default class ChatApp extends Vue {
       this.loadUserInfo();
       return;
     }
-    router.push({ name: "Auth" });
+    router.push({ name: 'Auth' });
   }
 
-  @Watch("window.innerWidth")
+  @Watch('window.innerWidth')
   changedWidth(): void {
     this.smallDevice = false;
     if (window.innerWidth <= 800) {
@@ -110,11 +110,11 @@ export default class ChatApp extends Vue {
     }
   }
 
-  @Watch("$route.name")
+  @Watch('$route.name')
   setTopBar(): void {
     this.homePage = false;
-    this.pageName = this.$route.name || "";
-    if (this.pageName === "Home") {
+    this.pageName = this.$route.name || '';
+    if (this.pageName === 'Home') {
       this.homePage = true;
     }
   }
@@ -138,16 +138,16 @@ export default class ChatApp extends Vue {
   }
 
   selectTabType(tabType: string): void {
-    this.pageName = this.$route.name || "";
+    this.pageName = this.$route.name || '';
     this.tabType = tabType;
-    if (tabType === "personal" || tabType === "group") {
-      if (this.pageName !== "Home") {
-        router.push({ name: "Home" });
+    if (tabType === 'personal' || tabType === 'group') {
+      if (this.pageName !== 'Home') {
+        router.push({ name: 'Home' });
       }
       this.chatTabType = tabType;
       return;
     }
-    if (this.pageName !== tabType && tabType !== "theme-change") {
+    if (this.pageName !== tabType && tabType !== 'theme-change') {
       router.push({ name: tabType });
       return;
     }
@@ -155,7 +155,7 @@ export default class ChatApp extends Vue {
 
   async created(): Promise<void> {
     this.changedWidth();
-    window.addEventListener("resize", this.changedWidth);
+    window.addEventListener('resize', this.changedWidth);
     await this.isLoggedIn();
     this.isUserLoggedIn();
   }

@@ -25,9 +25,9 @@
           </div>
         </div>
       </template> -->
-      <template v-for="item in group">
+      <template v-for="(item, index) in group">
         <div
-          :key="item._id"
+          :key="item._id + index"
           v-if="tabType === 'all' || tabType === 'group'"
           class="contact-info"
           @click="enterChat(item)"
@@ -39,7 +39,18 @@
           />
           <div class="contact-details">
             <div class="name">{{ item.groupName }}</div>
-            <div class="msg-status">Vidya: Nothing!!!</div>
+            <div
+              class="msg-status"
+              v-if="isUserTyping.name && item._id === isUserTyping.roomId"
+            >
+              {{ `${isUserTyping.name} is typing...` }}
+            </div>
+            <div v-else class="msg-status">
+              <span v-if="!isLoading">
+                {{ lastMessage[item._id].sender }}:
+                {{ lastMessage[item._id].message }}
+              </span>
+            </div>
           </div>
         </div>
       </template>
@@ -48,31 +59,66 @@
 </template>
 
 <script lang="ts">
-import { SocketActions } from "@/types/types";
-import { Vue, Component, Prop } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { ChatActions, SocketActions } from '@/types/types';
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+import { namespace } from 'vuex-class';
+import UserMsgHint from '@/components/UserMsgHint.vue';
 
-const contacts = namespace("Contacts");
-const socket = namespace("Socket");
+const contacts = namespace('Contacts');
+const socket = namespace('Socket');
+const chat = namespace('Chat');
 
-@Component
+@Component({
+  components: {
+    UserMsgHint,
+  },
+})
 export default class Contacts extends Vue {
-  @Prop({ default: "all" }) tabType!: string;
+  @Prop({ default: 'all' }) tabType!: string;
 
   groupInfo: { _id: string; groupName: string; groupOwners: string[] } = {
-    _id: "",
-    groupName: "",
+    _id: '',
+    groupName: '',
     groupOwners: [],
   };
 
+  roomLastMessages: { roomId: string; lastMsg: string }[] = [];
+
+  @chat.State('formateLastMessages')
+  public isLoading!: boolean;
+
   @contacts.Getter
   group!: any;
+
+  @chat.Getter
+  lastMessage!: any;
+
+  @socket.Getter
+  public isUserTyping!: { name: string; roomId: string };
+
+  @chat.Action(ChatActions.SET_LOADING)
+  public setLoading!: (loading: boolean) => void;
 
   @socket.Action(SocketActions.JOIN_ROOM)
   public joinRoom!: (payload: { userInfo: string; room: string }) => void;
 
   @socket.Action(SocketActions.LEAVE_ROOM)
   public leaveRoom!: (payload: { userInfo: string; room: string }) => void;
+
+  @chat.Action(ChatActions.GET_LAST_MESSAGE)
+  public getLastMessage!: (roomId: string) => void;
+
+  @Watch('group')
+  loadLastMessages(): void {
+    if (this.group.length) {
+      this.getLastMessage(this.group);
+    }
+  }
+
+  @Watch('lastMessage')
+  setLastMessage(): void {
+    console.log('koo');
+  }
 
   leaveChat(data: { userInfo: string; room: string }): void {
     this.leaveRoom(data);
@@ -85,16 +131,20 @@ export default class Contacts extends Vue {
   }): void {
     if (this.groupInfo) {
       this.leaveChat({
-        userInfo: "",
+        userInfo: '',
         room: this.groupInfo._id,
       });
     }
     this.groupInfo = data;
-    this.$emit("loadMessage", data);
+    this.$emit('loadMessage', data);
     this.joinRoom({
-      userInfo: "",
+      userInfo: '',
       room: data._id,
     });
+  }
+
+  created(): void {
+    //
   }
 }
 </script>

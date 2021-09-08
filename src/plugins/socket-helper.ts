@@ -1,6 +1,6 @@
-import { io } from "socket.io-client";
-import store from "@/store";
-import { ChatActions, ContactActions } from "@/types/types";
+import { io } from 'socket.io-client';
+import store from '@/store';
+import { ChatActions, ContactActions, SocketActions } from '@/types/types';
 
 export default class SocketHelper {
   public userDetails: { email: string };
@@ -8,7 +8,7 @@ export default class SocketHelper {
 
   constructor() {
     this.socket = null;
-    this.userDetails = { email: "" };
+    this.userDetails = { email: '' };
   }
 
   public connect = (): // userDetails: { email: string }
@@ -16,7 +16,7 @@ export default class SocketHelper {
     // this.userDetails = userDetails;
     // const userDetailsJsonString = JSON.stringify(userDetails);
     const host = `localhost:3001`;
-    this.socket = io(host, { transports: ["websocket"] }).connect();
+    this.socket = io(host, { transports: ['websocket'] });
     this.eventListeners();
   };
 
@@ -25,18 +25,26 @@ export default class SocketHelper {
     //   this.onConnected(msg);
     // });
     this.socket.on(
-      "send-message-client",
+      'send-message-client',
       (data: { message: string; sender: string; room: string }) => {
         store.dispatch(`Chat/${ChatActions.RECEIVE_MESSAGE}`, data);
       }
     );
-    this.socket.on("group-list", async (data: any) => {
+    this.socket.on('group-list', async (data: any) => {
       store.dispatch(`Contacts/${ContactActions.GROUP_CREATED}`, data.data);
     });
-    this.socket.on("join-room-response", async (data: any) => {
+    this.socket.on('typing-client', async (data: any, socketId: string) => {
+      if (socketId !== this.socket.id) {
+        store.dispatch(`Socket/${SocketActions.USER_TYPING}`, data);
+      }
+    });
+    this.socket.on('last-message-client', async (data: any) => {
+      store.dispatch(`Chat/${ChatActions.LAST_MESSAGE}`, data);
+    });
+    this.socket.on('join-room-response', async (data: any) => {
       //
     });
-    this.socket.on("leave-room-response", async (data: any) => {
+    this.socket.on('leave-room-response', async (data: any) => {
       //
     });
   }
@@ -46,7 +54,7 @@ export default class SocketHelper {
     room: string;
     from: string;
   }): Promise<void> => {
-    this.socket.emit("send-message-server", {
+    this.socket.emit('send-message-server', {
       message: payload.message,
       sender: payload.from,
       room: payload.room,
@@ -57,26 +65,30 @@ export default class SocketHelper {
     groupName: string;
     groupOwners: string[];
   }): Promise<void> => {
-    this.socket.emit("create-group", data);
+    this.socket.emit('create-group', data);
   };
 
   public joinRoom = async (payload: {
     userInfo: string;
     room: string;
   }): Promise<void> => {
-    this.socket.emit("join-room", payload);
+    this.socket.emit('join-room', payload);
   };
 
   public leaveRoom = async (payload: {
     userInfo: string;
     room: string;
   }): Promise<void> => {
-    this.socket.emit("leave-room", payload);
+    this.socket.emit('leave-room', payload);
   };
 
-  // public userTyping = (email: string): void => {
-  //   this.socket.emit("typing", email);
-  // };
+  public userTyping = (data: { name: string; roomId: string }): void => {
+    this.socket.emit('typing-server', data);
+  };
+
+  public lastMessage = (data: { roomId: string }): void => {
+    this.socket.emit('last-message-server', data);
+  };
 
   // public onConnected = (msg: string): void => {
   //   store.dispatch(`Socket/${SocketActions.WELCOME_MESSAGE}`, msg);

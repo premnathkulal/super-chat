@@ -54,15 +54,16 @@
 </template>
 
 <script lang="ts">
-import { VEmojiPicker } from "v-emoji-picker";
-import { Emoji } from "v-emoji-picker/lib/models/Emoji";
-import { Vue, Component, Prop } from "vue-property-decorator";
-import { namespace } from "vuex-class";
-import { ChatActions, SocketActions } from "@/types/types";
+import { VEmojiPicker } from 'v-emoji-picker';
+import { Emoji } from 'v-emoji-picker/lib/models/Emoji';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { namespace } from 'vuex-class';
+import { ChatActions, SocketActions } from '@/types/types';
+// import _ from 'lodash';
 
-const chat = namespace("Chat");
-const socket = namespace("Socket");
-const user = namespace("User");
+const chat = namespace('Chat');
+const socket = namespace('Socket');
+const user = namespace('User');
 
 @Component({
   components: {
@@ -71,22 +72,24 @@ const user = namespace("User");
 })
 export default class MessageInput extends Vue {
   showEmojies = false;
-  message = "";
+  message = '';
   curPos = 0;
   socket: any = null;
+  msgTimeout: any = null;
+  msgTyping = false;
 
   @user.Getter
   public userInfo!: any;
 
-  @Prop({ default: "" }) messageId!: string;
-  @Prop({ default: "" }) groupInfo!: {
+  @Prop({ default: '' }) messageId!: string;
+  @Prop({ default: '' }) groupInfo!: {
     _id: string;
     groupName: string;
     groupOwners: string[];
   };
 
   @socket.Action(SocketActions.STARTED_TYPING)
-  public userTyping!: (id: string) => void;
+  public userTyping!: (data: { name: string; roomId: string }) => void;
 
   @chat.Action(ChatActions.SEND_MESSAGE)
   public sendMessageToServer!: (payLoad: {
@@ -95,12 +98,8 @@ export default class MessageInput extends Vue {
     sender: string;
   }) => void;
 
-  messageTyping(): void {
-    console.log("typing...");
-  }
-
   getTextBox(): HTMLInputElement {
-    const element = document.getElementById("text-box");
+    const element = document.getElementById('text-box');
     const el = element as HTMLInputElement;
     return el;
   }
@@ -112,6 +111,11 @@ export default class MessageInput extends Vue {
 
   getCursorPositionWhileTyping($event: InputEvent): void {
     this.getCursorPosition();
+    this.startedTyping();
+  }
+
+  myFn() {
+    console.log('KOO');
   }
 
   typeInTextarea(emoji: string) {
@@ -127,15 +131,29 @@ export default class MessageInput extends Vue {
   }
 
   async sendMessage(): Promise<void> {
-    this.sendMessageToServer({
+    await this.sendMessageToServer({
       message: this.message,
       roomId: this.groupInfo._id,
       sender: this.userInfo.email,
     });
     if (this.message) {
-      this.message = "";
+      this.message = '';
       this.showEmojies = false;
     }
+    this.userTyping({ name: '', roomId: this.groupInfo._id });
+  }
+
+  startedTyping() {
+    clearTimeout(this.msgTimeout);
+    if (!this.msgTyping) {
+      this.msgTyping = true;
+      this.userTyping({ name: this.userInfo.name, roomId: this.groupInfo._id });
+    }
+    this.msgTimeout = setTimeout(() => {
+      this.msgTyping = false;
+      this.userTyping({ name: '', roomId: this.groupInfo._id });
+    }, 2000);
+    this.msgTimeout;
   }
 
   created(): void {

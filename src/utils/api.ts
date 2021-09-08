@@ -1,7 +1,7 @@
-import axios, { AxiosResponse } from "axios";
-import axiosApi from "./axiosInterceptor";
+import axios, { AxiosResponse } from 'axios';
+import axiosApi from './axiosInterceptor';
 
-const BASE_URL = "http://localhost:3001/";
+const BASE_URL = 'http://localhost:3001/';
 
 const fetchGroupChat = (id: string): Promise<AxiosResponse> => {
   return axios.get(`${BASE_URL}chat/load-chat/${id}`);
@@ -27,4 +27,16 @@ const userInfo = (): Promise<AxiosResponse> => {
   return axiosApi.get(`${BASE_URL}auth/user-info`);
 };
 
-export { fetchGroupChat, sendGroupChat, loadGroup, register, login, userInfo };
+const getLastMessage = (groupIds: any): Promise<AxiosResponse> => {
+  return axiosApi.post(`${BASE_URL}chat/last-message`, { roomIds: groupIds });
+};
+
+export {
+  fetchGroupChat,
+  sendGroupChat,
+  loadGroup,
+  register,
+  login,
+  userInfo,
+  getLastMessage,
+};
