@@ -56,12 +56,22 @@ export class AppGateway
     this.logger.log(`${client.id} Client message action`);
     await this.chatServices.sendChatGroup(payload);
     this.wss.to(payload.room).emit('send-message-client', payload);
+    this.wss.emit('last-message-client', {
+      ...payload,
+      time: new Date(),
+    });
   }
 
   @SubscribeMessage('create-group')
   async createGroup(client: Socket, payload: any): Promise<void> {
     const result = await this.groupService.createGroup(payload);
     client.emit('group-list', result);
+    return;
+  }
+
+  @SubscribeMessage('typing-server')
+  async userTyping(client: Socket, payload: any): Promise<void> {
+    this.wss.emit('typing-client', payload, client.id);
     return;
   }
 }

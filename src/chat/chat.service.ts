@@ -55,7 +55,17 @@ export class ChatService {
     };
   }
 
-  // async msgTyping(id: string): Promise<any> {
-  //
-  // }
+  async getLastMessage(roomIds: any): Promise<any> {
+    const result: any = await this.chatModule.aggregate([
+      { $match: { roomId: { $in: roomIds } } },
+      {
+        $project: {
+          _id: 0,
+          roomId: 1,
+          message: { $arrayElemAt: ['$messages', -1] },
+        },
+      },
+    ]);
+    return result;
+  }
 }
