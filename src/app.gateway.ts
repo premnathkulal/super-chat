@@ -51,11 +51,11 @@ export class AppGateway
   @SubscribeMessage('send-message-server')
   async handleMessage(
     client: Socket,
-    payload: { message: string; sender: string; room: string },
+    payload: { message: string; sender: string; name: string; room: string },
   ): Promise<void> {
     this.logger.log(`${client.id} Client message action`);
-    await this.chatServices.sendChatGroup(payload);
-    this.wss.to(payload.room).emit('send-message-client', payload);
+    const result = await this.chatServices.sendChatGroup(payload);
+    this.wss.to(payload.room).emit('send-message-client', result);
     this.wss.emit('last-message-client', {
       ...payload,
       time: new Date(),

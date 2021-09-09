@@ -15,11 +15,14 @@ export class ChatService {
   async sendChatGroup(data: {
     message: string;
     sender: string;
+    name: string;
     room: string;
   }): Promise<any> {
     const result: any = await this.chatModule
       .findOne({ roomId: data.room })
       .exec();
+
+    const time = new Date().toString();
 
     if (!result) {
       const messageDetails = {
@@ -28,8 +31,9 @@ export class ChatService {
         messages: [
           {
             sender: data.sender,
+            name: data.name,
             message: data.message,
-            time: new Date().toString(),
+            time,
           },
         ],
       };
@@ -38,8 +42,9 @@ export class ChatService {
     } else {
       const newMessage = {
         sender: data.sender,
+        name: data.name,
         message: data.message,
-        time: new Date().toString(),
+        time,
       };
       result.messages.push(newMessage);
       result.save();
@@ -49,8 +54,9 @@ export class ChatService {
       status: HttpStatus.OK,
       data: {
         sender: data.sender,
+        name: data.name,
         message: data.message,
-        time: new Date().toString(),
+        time,
       },
     };
   }
