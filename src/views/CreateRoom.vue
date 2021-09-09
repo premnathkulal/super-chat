@@ -49,13 +49,15 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
 import CustomInput from '@/components/CustomInput.vue';
 import CustomButton from '@/components/CustomButton.vue';
 import { namespace } from 'vuex-class';
 import { ContactActions } from '@/types/types';
+import router from '@/router';
 
 const contacts = namespace('Contacts');
+const user = namespace('User');
 
 @Component({
   components: {
@@ -71,11 +73,24 @@ export default class CreateRoom extends Vue {
   name = '';
   nameError = '';
 
+  @user.Getter
+  public userInfo!: any;
+
+  @contacts.Getter
+  public isGroupCreated!: any;
+
   @contacts.Action(ContactActions.CREATE_GROUP)
   public createGroup!: (data: {
     groupName: string;
     groupOwners: string[];
   }) => void;
+
+  @Watch('isGroupCreated')
+  groupCreated(): void {
+    if (this.isGroupCreated) {
+      router.push({ name: 'Home' });
+    }
+  }
 
   clearForm(): void {
     this.name = '';
@@ -115,7 +130,10 @@ export default class CreateRoom extends Vue {
 
   buttonAction(): void {
     if (this.createGroupTab) {
-      this.createGroup({ groupName: this.name, groupOwners: ['navin123'] });
+      this.createGroup({
+        groupName: this.name,
+        groupOwners: [this.userInfo.email],
+      });
     }
   }
 }

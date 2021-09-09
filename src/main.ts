@@ -1,11 +1,13 @@
-import Vue from "vue";
-import App from "./App.vue";
-import "./registerServiceWorker";
-import router from "./router";
-import store from "./store";
-import "@lottiefiles/lottie-player";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
+import Vue from 'vue';
+import App from './App.vue';
+import './registerServiceWorker';
+import router from './router';
+import store from './store';
+import '@lottiefiles/lottie-player';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { sliceText } from '@/utils/filters';
+
 import {
   faCoffee,
   faSearch,
@@ -22,7 +24,7 @@ import {
   faMicrophone,
   faChevronLeft,
   faInfoCircle,
-} from "@fortawesome/free-solid-svg-icons";
+} from '@fortawesome/free-solid-svg-icons';
 
 library.add(
   faCoffee,
@@ -42,11 +44,13 @@ library.add(
   faInfoCircle
 );
 
-Vue.component("font-awesome-icon", FontAwesomeIcon);
+Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.config.productionTip = false;
+
+Vue.filter('sliceText', sliceText);
 
 new Vue({
   router,
   store,
-  render: (h) => h(App),
-}).$mount("#app");
+  render: h => h(App),
+}).$mount('#app');

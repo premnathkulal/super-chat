@@ -7,24 +7,6 @@
       </div>
     </div>
     <div class="contact-list">
-      <!-- <template v-for="(i, index) in 4">
-        <div
-          :key="`${index}-${i}`"
-          v-if="tabType === 'all' || tabType === 'personal'"
-          class="contact-info"
-          @click="enterChat(`Name ${i}`)"
-        >
-          <img
-            class="profile-pic"
-            :src="`https://avatars.dicebear.com/api/avataaars/Name-${i}.svg`"
-            alt="user-img"
-          />
-          <div class="contact-details">
-            <div class="name">Navin</div>
-            <div class="msg-status">Navin: Good Evening</div>
-          </div>
-        </div>
-      </template> -->
       <template v-for="(item, index) in group">
         <div
           :key="item._id + index"
@@ -48,7 +30,7 @@
             <div v-else class="msg-status">
               <span v-if="!isLoading && lastMessage[item._id]">
                 {{ lastMessage[item._id].name }}:
-                {{ lastMessage[item._id].message }}
+                {{ lastMessage[item._id].message | sliceText(20) }}
               </span>
             </div>
           </div>

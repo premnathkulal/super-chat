@@ -59,7 +59,6 @@ import { Emoji } from 'v-emoji-picker/lib/models/Emoji';
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 import { ChatActions, SocketActions } from '@/types/types';
-// import _ from 'lodash';
 
 const chat = namespace('Chat');
 const socket = namespace('Socket');

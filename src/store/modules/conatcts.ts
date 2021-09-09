@@ -7,10 +7,22 @@ import { AxiosResponse } from 'axios';
 @Module({ namespaced: true })
 class Contacts extends VuexModule {
   groupList: any = [];
+  groupCreated = false;
+
+  @Mutation
+  public [ContactMutations.GROUP_CREATED_FLAG](): void {
+    this.groupCreated = !this.groupCreated;
+  }
+
+  @Action
+  public [ContactActions.GROUP_CREATED_FLAG](): void {
+    this.context.commit(ContactMutations.GROUP_CREATED_FLAG);
+  }
 
   @Mutation
   public [ContactMutations.GROUP_CREATED](groupList: any): void {
     this.groupList.push(groupList);
+    this.groupCreated = true;
   }
 
   @Action
@@ -40,6 +52,10 @@ class Contacts extends VuexModule {
 
   get group(): any {
     return this.groupList;
+  }
+
+  get isGroupCreated(): boolean {
+    return this.groupCreated;
   }
 }
 export default Contacts;
