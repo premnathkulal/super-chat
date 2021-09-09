@@ -49,13 +49,13 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-import CustomInput from "@/components/CustomInput.vue";
-import CustomButton from "@/components/CustomButton.vue";
-import { namespace } from "vuex-class";
-import { ContactActions } from "@/types/types";
+import { Vue, Component } from 'vue-property-decorator';
+import CustomInput from '@/components/CustomInput.vue';
+import CustomButton from '@/components/CustomButton.vue';
+import { namespace } from 'vuex-class';
+import { ContactActions } from '@/types/types';
 
-const contacts = namespace("Contacts");
+const contacts = namespace('Contacts');
 
 @Component({
   components: {
@@ -66,10 +66,10 @@ const contacts = namespace("Contacts");
 export default class CreateRoom extends Vue {
   createGroupTab = false;
   showEmojiPicker = false;
-  email = "";
-  emailError = "";
-  name = "";
-  nameError = "";
+  email = '';
+  emailError = '';
+  name = '';
+  nameError = '';
 
   @contacts.Action(ContactActions.CREATE_GROUP)
   public createGroup!: (data: {
@@ -78,10 +78,10 @@ export default class CreateRoom extends Vue {
   }) => void;
 
   clearForm(): void {
-    this.name = "";
-    this.email = "";
-    this.nameError = "";
-    this.emailError = "";
+    this.name = '';
+    this.email = '';
+    this.nameError = '';
+    this.emailError = '';
   }
 
   toggleTab(): void {
@@ -91,21 +91,21 @@ export default class CreateRoom extends Vue {
   }
 
   validateEmail(): void {
-    this.emailError = "";
+    this.emailError = '';
     // eslint-disable-next-line
     const re =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (!this.email) {
-      this.emailError = "This field is Required";
+      this.emailError = 'This field is Required';
     } else if (!re.test(this.email)) {
-      this.emailError = "Enter valid Email";
+      this.emailError = 'Enter valid Email';
     }
   }
 
   validateName(): void {
-    this.emailError = "";
+    this.emailError = '';
     if (this.name.length < 4) {
-      this.nameError = "Name must be 4 character long";
+      this.nameError = 'Name must be 4 character long';
     }
   }
 
@@ -115,7 +115,7 @@ export default class CreateRoom extends Vue {
 
   buttonAction(): void {
     if (this.createGroupTab) {
-      this.createGroup({ groupName: this.name, groupOwners: ["navin123"] });
+      this.createGroup({ groupName: this.name, groupOwners: ['navin123'] });
     }
   }
 }
@@ -148,6 +148,10 @@ export default class CreateRoom extends Vue {
       display: flex;
       width: 100%;
       margin-bottom: 2rem;
+
+      @media only screen and (max-width: 500px) {
+        flex-direction: column;
+      }
 
       .button {
         flex: 1;

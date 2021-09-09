@@ -1,6 +1,6 @@
 <template>
   <div class="display-message" ref="scrollToMe">
-    <template v-if="chatMessages.length">
+    <template v-if="chatData">
       <div
         v-for="(msg, index) in chatMessages"
         :key="`${index}-${chatId}`"
@@ -22,23 +22,35 @@
           </div>
         </div>
         <div class="message-contents">
-          <div class="user-name">{{ msg.sender }}</div>
+          <div class="user-name">{{ msg.name }}</div>
           <message :message="msg.message" @windowScroll="windowScroll" />
-          <div class="time">{{ "10:00AM" }}</div>
+          <div class="time">{{ '10:00AM' }}</div>
         </div>
       </div>
     </template>
+    <div v-else class="emty-field">
+      <lottie-player
+        autoplay
+        loop
+        mode="normal"
+        style="width: 220px; height: 200px"
+        src="/assets/lovely-cats.json"
+        background="transperant"
+      >
+      </lottie-player>
+      No Chats Found
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
-import Message from "@/components/Message.vue";
-import { namespace } from "vuex-class";
-import { ChatActions } from "@/types/types";
+import { Component, Vue, Watch } from 'vue-property-decorator';
+import Message from '@/components/Message.vue';
+import { namespace } from 'vuex-class';
+import { ChatActions } from '@/types/types';
 
-const chat = namespace("Chat");
-const user = namespace("User");
+const chat = namespace('Chat');
+const user = namespace('User');
 
 @Component({
   components: {
@@ -47,7 +59,7 @@ const user = namespace("User");
 })
 export default class DisplyMessages extends Vue {
   chatMessages: any = [];
-  chatId = "";
+  chatId = '';
 
   @user.Getter
   public userInfo!: any;
@@ -61,46 +73,34 @@ export default class DisplyMessages extends Vue {
   @chat.Action(ChatActions.LOAD_CHAT)
   public loadChatData!: (id: string) => any;
 
-  @Watch("isLoading")
+  @Watch('isLoading')
   windowScroll(): void {
     const element = this.$refs.scrollToMe as HTMLElement;
     if (element) {
       element.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
+        behavior: 'smooth',
+        block: 'end',
       });
     }
   }
 
-  @Watch("chatData")
+  @Watch('chatData')
   setMessages(): void {
     this.chatMessages = [];
-    this.chatMessages.push(...this.chatData.messages);
-    this.chatId = this.chatData.roomId;
+    if (this.chatData) {
+      this.chatMessages.push(...this.chatData.messages);
+      this.chatId = this.chatData.roomId;
+    }
   }
 
   mounted(): void {
     this.windowScroll();
-  }
-
-  created(): void {
-    // const host = `localhost:3000`;
-    // const socket = io(host, { transports: ["websocket"] });
-    // socket.on("messageToClient", (data: any) => {
-    //   new Promise((resolve, reject) => {
-    //     this.chatContent = data.data;
-    //     resolve("done");
-    //   }).then(() => {
-    //     this.windowScroll();
-    //   });
-    // });
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .display-message {
-  // margin: 1rem 0.4rem;
   .message,
   .my-message {
     display: flex;
@@ -156,6 +156,14 @@ export default class DisplyMessages extends Vue {
       margin-right: 0rem;
       margin-left: 0.5rem;
     }
+  }
+
+  .emty-field {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    height: 60vh;
   }
 }
 </style>

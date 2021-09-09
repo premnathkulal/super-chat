@@ -53,10 +53,12 @@ export default class SocketHelper {
     message: string;
     room: string;
     from: string;
+    name: string;
   }): Promise<void> => {
     this.socket.emit('send-message-server', {
       message: payload.message,
       sender: payload.from,
+      name: payload.name,
       room: payload.room,
     });
   };

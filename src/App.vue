@@ -17,17 +17,18 @@
         v-if="(smallDevice && !openDrawer) || !smallDevice"
         class="chat-block"
       >
+        <welcome-screen v-if="homePage && !chatLoaded" />
         <top-bar
-          v-if="homePage"
+          v-if="homePage && chatLoaded"
           :tabType="tabType"
           :showMenuIcon="smallDevice"
           :groupInfo="groupInfo"
           @toggleDrawer="toggleDrawer()"
         />
         <router-view class="router-view" />
-        <message-input v-if="homePage" :groupInfo="groupInfo" />
+        <message-input v-if="homePage && chatLoaded" :groupInfo="groupInfo" />
       </div>
-      <router-view v-else-if="!homePage" class="router-view" />
+      <router-view v-else-if="!homePage && chatLoaded" class="router-view" />
     </div>
   </div>
 </template>
@@ -39,6 +40,7 @@ import SideBarMenu from '@/components/SideBarMenu.vue';
 import Contacts from '@/components/Contacts.vue';
 import TopBar from '@/components/TopBar.vue';
 import MessageInput from '@/components/MessageInput.vue';
+import WelcomeScreen from '@/components/WelcomeScreen.vue';
 import router from './router';
 import { namespace } from 'vuex-class';
 import {
@@ -60,6 +62,7 @@ const user = namespace('User');
     Contacts,
     TopBar,
     MessageInput,
+    WelcomeScreen,
   },
 })
 export default class ChatApp extends Vue {
@@ -71,6 +74,7 @@ export default class ChatApp extends Vue {
   messageText = '';
   chatTabType = 'all';
   tabType = 'all';
+  chatLoaded = false;
   groupInfo = {};
 
   @user.Getter
@@ -123,10 +127,6 @@ export default class ChatApp extends Vue {
     this.openDrawer = !this.openDrawer;
   }
 
-  logout(): void {
-    //
-  }
-
   loadMessage(groupInfo: {
     _id: string;
     groupName: string;
@@ -135,6 +135,7 @@ export default class ChatApp extends Vue {
     this.loadChats(groupInfo._id);
     this.groupInfo = groupInfo;
     this.openDrawer = false;
+    this.chatLoaded = true;
   }
 
   selectTabType(tabType: string): void {
@@ -174,6 +175,7 @@ export default class ChatApp extends Vue {
   .chat-window {
     display: flex;
     flex-direction: row;
+
     .chat-block {
       width: 100%;
       height: 100vh;

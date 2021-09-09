@@ -46,8 +46,8 @@
               {{ `${isUserTyping.name} is typing...` }}
             </div>
             <div v-else class="msg-status">
-              <span v-if="!isLoading">
-                {{ lastMessage[item._id].sender }}:
+              <span v-if="!isLoading && lastMessage[item._id]">
+                {{ lastMessage[item._id].name }}:
                 {{ lastMessage[item._id].message }}
               </span>
             </div>
@@ -115,11 +115,6 @@ export default class Contacts extends Vue {
     }
   }
 
-  @Watch('lastMessage')
-  setLastMessage(): void {
-    console.log('koo');
-  }
-
   leaveChat(data: { userInfo: string; room: string }): void {
     this.leaveRoom(data);
   }
@@ -141,10 +136,6 @@ export default class Contacts extends Vue {
       userInfo: '',
       room: data._id,
     });
-  }
-
-  created(): void {
-    //
   }
 }
 </script>

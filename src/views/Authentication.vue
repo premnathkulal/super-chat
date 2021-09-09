@@ -66,14 +66,14 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from "vue-property-decorator";
-import CustomInput from "@/components/CustomInput.vue";
-import CustomButton from "@/components/CustomButton.vue";
-import { namespace } from "vuex-class";
-import { UserActions } from "@/types/types";
-import router from "@/router";
+import { Vue, Component, Watch } from 'vue-property-decorator';
+import CustomInput from '@/components/CustomInput.vue';
+import CustomButton from '@/components/CustomButton.vue';
+import { namespace } from 'vuex-class';
+import { UserActions } from '@/types/types';
+import router from '@/router';
 
-const user = namespace("User");
+const user = namespace('User');
 
 @Component({
   components: {
@@ -82,15 +82,15 @@ const user = namespace("User");
   },
 })
 export default class Authentication extends Vue {
-  email = "";
-  password = "";
-  name = "";
-  nameError = "";
-  emailError = "";
-  passwordError = "";
+  email = '';
+  password = '';
+  name = '';
+  nameError = '';
+  emailError = '';
+  passwordError = '';
   register = false;
   createAccountTab = false;
-  errorMessage = "";
+  errorMessage = '';
 
   @user.Getter
   public isLoginSuccess!: boolean;
@@ -107,13 +107,13 @@ export default class Authentication extends Vue {
   @user.Action(UserActions.LOGIN)
   public loginUser!: (credentials: any) => any;
 
-  @Watch("isLoginSuccess")
+  @Watch('isLoginSuccess')
   loginSuccess(): void {
-    router.push({ name: "Home" });
+    router.push({ name: 'Home' });
   }
 
-  @Watch("loginError")
-  @Watch("registerError")
+  @Watch('loginError')
+  @Watch('registerError')
   watch(): void {
     if (this.loginError) {
       this.errorMessage = this.loginError as unknown as string;
@@ -125,41 +125,41 @@ export default class Authentication extends Vue {
   }
 
   validateName(): void {
-    this.emailError = "";
+    this.emailError = '';
     if (this.name.length < 4) {
-      this.nameError = "Name must be 4 character long";
+      this.nameError = 'Name must be 4 character long';
     }
   }
 
   validateEmail(): void {
-    this.emailError = "";
+    this.emailError = '';
     // eslint-disable-next-line
     const re =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (!this.email) {
-      this.emailError = "This field is Required";
+      this.emailError = 'This field is Required';
     } else if (!re.test(this.email)) {
-      this.emailError = "Enter valid Email";
+      this.emailError = 'Enter valid Email';
     }
   }
 
   validatePassword(): void {
-    this.passwordError = "";
+    this.passwordError = '';
     if (!this.password) {
-      this.passwordError = "This field is Required";
+      this.passwordError = 'This field is Required';
     } else if (this.password.length < 2) {
-      this.passwordError = "Password length should be greater than 8";
+      this.passwordError = 'Password length should be greater than 8';
     }
   }
 
   clearForm(): void {
-    this.name = "";
-    this.email = "";
-    this.password = "";
-    this.nameError = "";
-    this.emailError = "";
-    this.passwordError = "";
-    this.errorMessage = "";
+    this.name = '';
+    this.email = '';
+    this.password = '';
+    this.nameError = '';
+    this.emailError = '';
+    this.passwordError = '';
+    this.errorMessage = '';
   }
 
   loginRegisterToggle(): void {
@@ -182,9 +182,9 @@ export default class Authentication extends Vue {
     }
   }
 
-  @Watch("name")
-  @Watch("email")
-  @Watch("password")
+  @Watch('name')
+  @Watch('email')
+  @Watch('password')
   disableButton(): boolean {
     const isErrorMessage =
       !!this.nameError || !!this.emailError || !!this.passwordError;

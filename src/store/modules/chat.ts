@@ -43,9 +43,20 @@ class Chat extends VuexModule {
 
   @Mutation
   public async [ChatMutations.RECEIVE_MESSAGE](data: any): Promise<void> {
-    const chatData: any = { ...this.chatContent };
-    await chatData.messages.push(data);
-    this.chatContent = chatData;
+    if (this.chatContent) {
+      const chatData: any = { ...this.chatContent };
+      await chatData.messages.push(data);
+      this.chatContent = chatData;
+      return;
+    }
+    this.loading = true;
+    fetchGroupChat(data.room)
+      .then(async data => {
+        this.chatContent = data.data.data;
+      })
+      .finally(() => {
+        this.loading = false;
+      });
   }
 
   @Action
@@ -62,11 +73,13 @@ class Chat extends VuexModule {
     message: string;
     roomId: string;
     sender: string;
+    name: string;
   }): Promise<void> {
     const data = await connectionSocket.sendMessage({
       message: payLoad.message,
       room: payLoad.roomId,
       from: payLoad.sender,
+      name: payLoad.name,
     });
     this.context.commit(ChatMutations.LAST_MESSAGE, 'data');
   }
@@ -76,6 +89,7 @@ class Chat extends VuexModule {
     const chatData: any = { ...this.lastMessages };
     chatData[data.room] = {
       sender: data.sender,
+      name: data.name,
       message: data.message,
       time: data.time,
     };

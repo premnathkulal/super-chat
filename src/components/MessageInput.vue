@@ -95,6 +95,7 @@ export default class MessageInput extends Vue {
   public sendMessageToServer!: (payLoad: {
     message: string;
     roomId: string;
+    name: string;
     sender: string;
   }) => void;
 
@@ -114,10 +115,6 @@ export default class MessageInput extends Vue {
     this.startedTyping();
   }
 
-  myFn() {
-    console.log('KOO');
-  }
-
   typeInTextarea(emoji: string) {
     const el = this.getTextBox();
     el.value =
@@ -134,6 +131,7 @@ export default class MessageInput extends Vue {
     await this.sendMessageToServer({
       message: this.message,
       roomId: this.groupInfo._id,
+      name: this.userInfo.name,
       sender: this.userInfo.email,
     });
     if (this.message) {
