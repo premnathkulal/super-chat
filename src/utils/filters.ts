@@ -5,3 +5,13 @@ export function sliceText(value: string, limit: number): string {
   }
   return result;
 }
+
+export function timeDate(value: string, option: string): string {
+  let result = '';
+  if (option === 'time') {
+    result = value.slice(16, 21);
+  } else if (option === 'date') {
+    result = value.slice(0, 15);
+  }
+  return result;
+}

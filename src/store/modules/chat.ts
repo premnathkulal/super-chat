@@ -43,6 +43,8 @@ class Chat extends VuexModule {
 
   @Mutation
   public async [ChatMutations.RECEIVE_MESSAGE](data: any): Promise<void> {
+    console.log(data);
+
     if (this.chatContent) {
       const chatData: any = { ...this.chatContent };
       await chatData.messages.push(data);
@@ -60,11 +62,7 @@ class Chat extends VuexModule {
   }
 
   @Action
-  public [ChatActions.RECEIVE_MESSAGE](data: {
-    message: string;
-    sender: string;
-    room: string;
-  }): void {
+  public [ChatActions.RECEIVE_MESSAGE](data: any): void {
     this.context.commit(ChatMutations.RECEIVE_MESSAGE, data);
   }
 

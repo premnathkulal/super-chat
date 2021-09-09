@@ -7,6 +7,7 @@ import '@lottiefiles/lottie-player';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { sliceText } from '@/utils/filters';
+import { timeDate } from '@/utils/filters';
 
 import {
   faCoffee,
@@ -48,6 +49,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.config.productionTip = false;
 
 Vue.filter('sliceText', sliceText);
+Vue.filter('timeDate', timeDate);
 
 new Vue({
   router,

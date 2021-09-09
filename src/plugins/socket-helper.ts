@@ -24,12 +24,9 @@ export default class SocketHelper {
     // this.socket.on("welcomeMessage", (msg: string) => {
     //   this.onConnected(msg);
     // });
-    this.socket.on(
-      'send-message-client',
-      (data: { message: string; sender: string; room: string }) => {
-        store.dispatch(`Chat/${ChatActions.RECEIVE_MESSAGE}`, data);
-      }
-    );
+    this.socket.on('send-message-client', (data: any) => {
+      store.dispatch(`Chat/${ChatActions.RECEIVE_MESSAGE}`, data.data);
+    });
     this.socket.on('group-list', async (data: any) => {
       store.dispatch(`Contacts/${ContactActions.GROUP_CREATED}`, data.data);
     });

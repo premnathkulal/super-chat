@@ -1,32 +1,43 @@
 <template>
   <div class="display-message" ref="scrollToMe">
     <template v-if="chatData">
-      <div
-        v-for="(msg, index) in chatMessages"
-        :key="`${index}-${chatId}`"
-        :class="userInfo.email === msg.sender ? 'my-message' : ''"
-        class="message"
-      >
-        <div class="user-pic" v-if="index < chatMessages.length">
-          <div
-            v-if="
-              index + 1 === chatMessages.length ||
-              msg.sender !== chatMessages[index + 1].sender
-            "
-          >
-            <img
-              class="img"
-              :src="`https://avatars.dicebear.com/api/avataaars/${msg.sender}.svg`"
-              alt="user-img"
-            />
+      <template v-for="(msg, index) in chatMessages">
+        <div
+          v-if="
+            index === 0 ||
+            msg.time.slice(0, 15) !== chatMessages[index - 1].time.slice(0, 15)
+          "
+          :key="index"
+          class="message-date"
+        >
+          <span class="date-text">{{ msg.time | timeDate('date') }}</span>
+        </div>
+        <div
+          :key="`${index}-${chatId}`"
+          :class="userInfo.email === msg.sender ? 'my-message' : ''"
+          class="message"
+        >
+          <div class="user-pic" v-if="index < chatMessages.length">
+            <div
+              v-if="
+                index + 1 === chatMessages.length ||
+                msg.sender !== chatMessages[index + 1].sender
+              "
+            >
+              <img
+                class="img"
+                :src="`https://avatars.dicebear.com/api/avataaars/${msg.sender}.svg`"
+                alt="user-img"
+              />
+            </div>
+          </div>
+          <div class="message-contents">
+            <div class="user-name">{{ msg.name }}</div>
+            <message :message="msg.message" @windowScroll="windowScroll" />
+            <div class="time">{{ msg.time | timeDate('time') }}</div>
           </div>
         </div>
-        <div class="message-contents">
-          <div class="user-name">{{ msg.name }}</div>
-          <message :message="msg.message" @windowScroll="windowScroll" />
-          <div class="time">{{ '10:00AM' }}</div>
-        </div>
-      </div>
+      </template>
     </template>
     <div v-else class="emty-field">
       <lottie-player
@@ -101,6 +112,19 @@ export default class DisplyMessages extends Vue {
 
 <style lang="scss" scoped>
 .display-message {
+  .message-date {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.3rem;
+    font-size: 0.8rem;
+
+    .date-text {
+      background: #e7eff8;
+      padding: 0.3rem;
+    }
+  }
+
   .message,
   .my-message {
     display: flex;
