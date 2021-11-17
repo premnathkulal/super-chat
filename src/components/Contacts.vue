@@ -2,7 +2,11 @@
   <div class="contacts">
     <div class="input-area">
       <div class="search-box">
-        <input type="text" class="text-box" placeholder="Search..." />
+        <input
+          type="text"
+          class="text-box"
+          placeholder="Search name or channel"
+        />
         <font-awesome-icon icon="search" />
       </div>
     </div>
@@ -30,7 +34,7 @@
             <div v-else class="msg-status">
               <span v-if="!isLoading && lastMessage[item._id]">
                 {{ lastMessage[item._id].name }}:
-                {{ lastMessage[item._id].message | sliceText(20) }}
+                {{ sliceText(lastMessage[item._id].message, 20) }}
               </span>
             </div>
           </div>
@@ -45,6 +49,7 @@ import { ChatActions, SocketActions } from '@/types/types';
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import { namespace } from 'vuex-class';
 import UserMsgHint from '@/components/UserMsgHint.vue';
+import { sliceText } from '@/utils/filters';
 
 const contacts = namespace('Contacts');
 const socket = namespace('Socket');
@@ -64,6 +69,7 @@ export default class Contacts extends Vue {
     groupOwners: [],
   };
 
+  sliceText = sliceText;
   roomLastMessages: { roomId: string; lastMsg: string }[] = [];
 
   @chat.State('formateLastMessages')
